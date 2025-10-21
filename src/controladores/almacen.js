@@ -2,13 +2,10 @@ import {pool} from '../db.js'
 
 export const getAlmacen = async (req,res)=>{
     const {filtro} = req.params
-    const {rows} = await pool.query(`SELECT "Almacen"."id", "Almacen"."Nombre", "Tipos"."Nombre" as "Tipo",
-        "Unidades", "CantidadPorUnidad", "Areas"."Nombre" as "Area", "Entrada", 
-		"Salida", "Perdida", "UltimaModificación", "Usuarios"."Nombre" as "UltimoUsuario"
+    const {rows} = await pool.query(`SELECT "id", "Nombre", "Tipo",
+        "Unidades", "CantidadPorUnidad", "Area", "Entrada", 
+		"Salida", "Perdida", "UltimaModificación", "UltimoUsuario"
         FROM public."Almacen"
-        INNER JOIN "Tipos" ON "Almacen"."Tipo" = "Tipos"."id"
-	    INNER JOIN "Areas" ON "Almacen"."Area" = "Areas"."id"
-		INNER JOIN "Usuarios" ON "Almacen"."UltimoUsuario" = "Usuarios"."Nombre"
         ORDER BY "${filtro}";`);
     res.send(rows)
 }
@@ -16,14 +13,11 @@ export const getAlmacen = async (req,res)=>{
 export const getAlmacenBusqueda = async (req,res)=>{
     const {filtro} = req.params
     const {busqueda} = req.params
-    const {rows} = await pool.query(`SELECT "Almacen"."id", "Almacen"."Nombre", "Tipos"."Nombre" as "Tipo",
-        "Unidades", "CantidadPorUnidad", "Areas"."Nombre" as "Area", "Entrada", 
-		"Salida", "Perdida", "UltimaModificación", "Usuarios"."Nombre" as "UltimoUsuario"
+    const {rows} = await pool.query(`SELECT "id", "Nombre", "Tipo",
+        "Unidades", "CantidadPorUnidad", "Area", "Entrada", 
+		"Salida", "Perdida", "UltimaModificación", "UltimoUsuario"
         FROM public."Almacen"
-        INNER JOIN "Tipos" ON "Almacen"."Tipo" = "Tipos"."id"
-	    INNER JOIN "Areas" ON "Almacen"."Area" = "Areas"."id"
-		INNER JOIN "Usuarios" ON "Almacen"."UltimoUsuario" = "Usuarios"."Nombre"
-        WHERE "Almacen"."Nombre"||"Tipos"."Nombre"||"Areas"."Nombre" ILIKE '%${busqueda}%' ORDER BY "${filtro}";`);
+        WHERE "Nombre"||"Tipo"||"Area" ILIKE '%${busqueda}%' ORDER BY "${filtro}";`);
     res.send(rows)
 }
 
@@ -34,7 +28,7 @@ export const añadirAlmacen = async (req,res)=>{
     const {rows} = await pool.query(`INSERT INTO public."Almacen"(
 	"Nombre", "Unidades", "CantidadPorUnidad", "Entrada", "Salida", 
     "Perdida", "UltimaModificación", "Tipo", "Area", "UltimoUsuario") 
-    VALUES ('${datos.nombre}', 0, 0, 0, 0, 0, ${fechaTexto}, ${datos.tipo}, 
+    VALUES ('${datos.nombre}', 0, ${datos.cantidad}, 0, 0, 0, ${fechaTexto}, '${datos.tipo}', 
     '${datos.area}', '${datos.usuario}') RETURNING *;`);
     res.send(rows)
 }
