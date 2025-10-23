@@ -25,12 +25,16 @@ export const añadirAlmacen = async (req,res)=>{
     const datos = req.body
     const fecha = new Date(Date.now());
     const fechaTexto = fecha.toLocaleDateString()+" "+fecha.getHours()+":"+fecha.getMinutes()+":"+fecha.getSeconds()
-    const {rows} = await pool.query(`INSERT INTO public."Almacen"(
+    const consulta = await pool.query(`INSERT INTO public."Almacen"(
 	"Nombre", "Unidades", "CantidadPorUnidad", "Entrada", "Salida", 
     "Perdida", "UltimaModificación", "Tipo", "Area", "UltimoUsuario") 
-    VALUES ('${datos.nombre}', 0, ${datos.cantidad}, 0, 0, 0, ${fechaTexto}, '${datos.tipo}', 
+    VALUES ('${datos.nombre}', 0, ${datos.cantidad}, 0, 0, 0, '${fechaTexto}', '${datos.tipo}', 
     '${datos.area}', '${datos.usuario}') RETURNING *;`);
-    res.send(rows)
+    if(consulta.rowCount>0){
+        res.send(consulta.rows)
+    }else{
+        res.status(409).send('Error: Error en la base de datos')
+    }
 }
 
 export const eliminarAlmacen = async(req,res)=>{
