@@ -1,15 +1,17 @@
-import {Router} from 'express'
-import {añadirAlmacen, editarAlmacen, eliminarAlmacen, getAlmacen,getAlmacenBusqueda} from '../controladores/almacen.js'
+import { Router } from 'express';
+import { añadirAlmacen, editarAlmacen, eliminarAlmacen, getAlmacen, getAlmacenBusqueda, reiniciarMovimientos } from '../controladores/almacen.js';
 const rutas = Router();
 
-rutas.get('/:filtro',getAlmacen)
+rutas.get('/:filtro/:locacion', getAlmacen)
 
-rutas.get('/:filtro/:busqueda',getAlmacenBusqueda)
+rutas.get('/:filtro/:locacion/:busqueda', getAlmacenBusqueda)
 
-rutas.post('/',añadirAlmacen)
+rutas.post('/:locacion', añadirAlmacen)
 
-rutas.delete('/:id',eliminarAlmacen)
+rutas.delete('/:id/:locacion', eliminarAlmacen)
 
-rutas.put('/:id/:columna',editarAlmacen)
+rutas.put('/:id/:locacion/:columna', editarAlmacen)
+
+rutas.put('/reiniciarMovimientos/:locacion', reiniciarMovimientos)
 
 export default rutas

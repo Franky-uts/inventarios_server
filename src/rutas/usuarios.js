@@ -1,15 +1,15 @@
-import {Router} from 'express'
-import {getUsuarios, getUsuario, añadirUsuario, borrarUsuario, editarUsuario} from '../controladores/usuarios.js'
+import { Router } from 'express';
+import { añadirUsuario, borrarUsuario, editarUsuario, getUsuario, getUsuarios } from '../controladores/usuarios.js';
 const rutas = Router();
 
-rutas.get('/',getUsuarios)
+rutas.get('/getAll', getUsuarios)
 
-rutas.get('/:usuario/:contr',getUsuario)
+rutas.get('/:usuario/:contr', getUsuario)
 
-rutas.post('/',añadirUsuario)
+rutas.post('/', añadirUsuario)
 
-rutas.delete('/:usuario',borrarUsuario)
+rutas.delete('/:usuario', borrarUsuario)
 
-rutas.put('/:usuario/:columna',editarUsuario)
+rutas.put('/:usuario/:columna', editarUsuario)
 
 export default rutas
