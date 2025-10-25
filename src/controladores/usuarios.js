@@ -10,7 +10,7 @@ export const getUsuario = async (req, res) => {
     const { contr } = req.params
     const { rows } = await pool.query(`Select "Nombre" from public."Usuarios" WHERE "Nombre" = '${usuario}';`)
     if (rows.length > 0) {
-        const { rows } = await pool.query(`Select "Nombre", "Puesto", "Locación" from public."Usuarios" WHERE "Nombre" = '${usuario}' AND "Contraseña" = '${contr}';`)
+        const { rows } = await pool.query(`Select "Nombre", "Puesto", "Locacion" from public."Usuarios" WHERE "Nombre" = '${usuario}' AND "Contraseña" = '${contr}';`)
         if (rows.length > 0) {
             res.send(rows)
         } else {
@@ -24,10 +24,9 @@ export const getUsuario = async (req, res) => {
 export const añadirUsuario = async (req, res) => {
     const datos = req.body
     const consulta = await pool.query(`Select "Nombre" from public."Usuarios" WHERE "Nombre" = '${datos.usuario}';`)
-    console.log(consulta.rowCount)
     if (consulta.rowCount < 1) {
-        const { rows } = await pool.query(`INSERT INTO public."Usuarios"("Nombre", "Contraseña", "Puesto") 
-            VALUES ('${datos.usuario}','${datos.contraseña}','${datos.puesto}') RETURNING *;`)
+        const { rows } = await pool.query(`INSERT INTO public."Usuarios"("Nombre", "Contraseña", "Puesto", "Locacion") 
+            VALUES ('${datos.usuario}','${datos.contraseña}','${datos.puesto}', '${datos.locacion}') RETURNING *;`)
         res.send(rows)
     } else {
         res.status(409).send('Error: El usuario ya existe')

@@ -15,7 +15,7 @@ app.get('/', (req, res) => {
 })
 
 app.use(express.json())
-app.use('/almacen', almacen);
+app.use('/inventario', almacen);
 app.use('/usuarios', usuarios);
 app.use('/tipos', tipos);
 app.use('/areas', areas);

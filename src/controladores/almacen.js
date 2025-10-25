@@ -27,7 +27,7 @@ export const getAlmacenBusqueda = async (req, res) => {
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
     } else {
-        res.status(409).send('Error: Error en la base de datos')
+        res.status(409).send('No hay coincidencias.')
     }
 }
 
@@ -37,7 +37,7 @@ export const añadirAlmacen = async (req, res) => {
     const fecha = new Date(Date.now());
     const fechaTexto = fecha.toLocaleDateString() + " " + fecha.getHours() + ":" + fecha.getMinutes() + ":" + fecha.getSeconds()
     const consulta = await pool.query(`INSERT INTO public."${locacion}"(
-	"Nombre", "Unidades", "CantidadPorUnidad", "Entrada", "Salida", 
+    "Nombre", "Unidades", "CantidadPorUnidad", "Entrada", "Salida", 
     "Perdida", "UltimaModificación", "Tipo", "Area", "UltimoUsuario") 
     VALUES ('${datos.nombre}', 0, ${datos.cantidad}, 0, 0, 0, '${fechaTexto}', '${datos.tipo}', 
     '${datos.area}', '${datos.usuario}') RETURNING *;`);
@@ -89,14 +89,17 @@ export const reiniciarMovimientos = async (req, res) => {
 }
 
 /*export const añadirAlmacen = async (req,res)=>{
-    const datos = req.body
-    const lista = []
     for (let i = 0; i < datos.length; i++) {
-        console.log(i)
-        console.log(datos[i])
-        const {rows} = await pool.query(`INSERT INTO almacen("Nombre", "Tipo", "Unidades", "CantidadPorUnidad", "Area", "Entrada", "Salida", "Perdida", "UltimaModificación") VALUES ('${datos[i].nombre}', '${datos[i].tipo}', 0, 0, '${datos[i].area}', 0, 0, 0, Now()) RETURNING *;`);
-        lista[i] = rows
+        const consulta = await pool.query(`INSERT INTO public."${locacion}"(
+    "Nombre", "Unidades", "CantidadPorUnidad", "Entrada", "Salida", 
+    "Perdida", "UltimaModificación", "Tipo", "Area", "UltimoUsuario") 
+    VALUES ('${datos[i].Nombre}', 0, ${datos[i].CantidadPorUnidad}, 0, 0, 0, '${fechaTexto}', '${datos[i].Tipo}', 
+    '${datos[i].Area}', '${datos[i].UltimoUsuario}') RETURNING *;`);
+        if (consulta.rowCount > 0) {
+            lista[i] = consulta.rows
+        } else {
+            lista[i] = "Contenido invalido"
+        }
     }
-    //const {rows} = await pool.query(`INSERT INTO almacen("Nombre", "Tipo", "Unidades", "CantidadPorUnidad", "Area", "Entrada", "Salida", "Perdida", "UltimaModificación") VALUES ('${datos.nombre}', '${datos.tipo}', 0, 0, '${datos.area}', 0, 0, 0, Now()) RETURNING *;`);
     res.send(lista)
 }*/
