@@ -3,6 +3,7 @@ import almacen from './rutas/almacen.js'
 import areas from './rutas/areas.js'
 import tipos from './rutas/tipos.js'
 import usuarios from './rutas/usuarios.js'
+import ordenes from './rutas/ordenes.js'
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use('/inventario', almacen);
 app.use('/usuarios', usuarios);
 app.use('/tipos', tipos);
 app.use('/areas', areas);
+app.use('/ordenes', ordenes);
 
 app.use((req, res, next) => {
     res.status(404).json({ error: "No se encontro " + req.path })
