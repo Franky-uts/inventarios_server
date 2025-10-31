@@ -2,7 +2,7 @@ import { pool } from '../db.js';
 
 export const getOrdenes = async (req, res) => {
     const { filtro } = req.params
-    const { rows } = await pool.query(`SELECT "id", "Artículos", "Cantidades", "Estado", "Remitente", "UltimaModificación"
+    const { rows } = await pool.query(`SELECT "id", "Artículos", "Cantidades", "Estado", "Remitente", "UltimaModificación", "Destino"
         FROM public."OrdenesPrueba"
         ORDER BY "${filtro}";`);
     res.send(rows)
@@ -13,8 +13,8 @@ export const añadirOrden = async (req, res) => {
     const fecha = new Date(Date.now());
     const fechaTexto = fecha.toLocaleDateString() + " " + fecha.getHours() + ":" + fecha.getMinutes() + ":" + fecha.getSeconds()
     const consulta = await pool.query(`INSERT INTO public."OrdenesPrueba"(
-	"Artículos", "Cantidades", "Estado", "Remitente", "UltimaModificación")
-	VALUES ('${datos.articulos}', '${datos.cantidades}', '${datos.estado}', '${datos.remitente}', '${fechaTexto}') RETURNING *;`);
+	"Artículos", "Cantidades", "Estado", "Remitente", "UltimaModificación", "Destino")|
+	VALUES ('${datos.articulos}', '${datos.cantidades}', '${datos.estado}', '${datos.remitente}', '${fechaTexto}', '${datos.destino}') RETURNING *;`);
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
     } else {
@@ -31,7 +31,7 @@ export const editarOrden = async (req, res) => {
             const datos = req.body;
             const fecha = new Date(Date.now());
             const fechaTexto = fecha.toLocaleDateString() + " " + fecha.getHours() + ":" + fecha.getMinutes() + ":" + fecha.getSeconds()
-            const { rows } = await pool.query(`UPDATE public."OrdenesPrueba" SET "${columna}" = ${datos.dato}, 
+            const { rows } = await pool.query(`UPDATE public."OrdenesPrueba" SET "${columna}" = '${datos.dato}', 
             "UltimaModificación" = '${fechaTexto}', "Remitente" = '${datos.usuario}' WHERE id = ${id} RETURNING *;`)
             res.send(rows)
         } else {
