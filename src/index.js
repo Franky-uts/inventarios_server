@@ -28,6 +28,8 @@ app.use((req, res, next) => {
 
 const port = process.env.PORT || 4000;
 
+console.log(port)
+
 
 app.listen(port, () => {
     console.log(`Escuchando en el puerto: ${port}`)
