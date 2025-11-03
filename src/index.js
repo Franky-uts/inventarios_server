@@ -12,7 +12,7 @@ app.use((req, res, next) => {
 })
 
 app.get('/', (req, res) => {
-    res.send("Servidor de inventarios "+process.env.PORT)
+    res.send("Servidor de inventarios"+process.env.DATABASE_URL)
 })
 
 app.use(express.json())
