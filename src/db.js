@@ -1,7 +1,7 @@
 import pg from 'pg'
 
 export const pool = new pg.Pool({
-    connectionString: "postgresql://neondb_owner:npg_sJM87XtBWDiu@ep-twilight-shadow-a43i11yb-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require",
+    connectionString: process.env.POSTGRES_URL, //"postgresql://neondb_owner:npg_sJM87XtBWDiu@ep-twilight-shadow-a43i11yb-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require",
     ssl: {
         rejectUnauthorized: false,
     },
