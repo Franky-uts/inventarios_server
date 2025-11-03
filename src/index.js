@@ -11,8 +11,10 @@ app.use((req, res, next) => {
     next();
 })
 
+const hola = process.env.PORT
+
 app.get('/', (req, res) => {
-    res.send("Servidor de inventarios")
+    res.send("Servidor de inventarios"+hola)
 })
 
 app.use(express.json())
