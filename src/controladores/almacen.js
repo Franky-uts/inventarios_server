@@ -36,7 +36,6 @@ export const añadirAlmacen = async (req, res) => {
     const datos = req.body
     const fecha = new Date(Date.now());
     const fechaTexto = fecha.toLocaleDateString() + " " + fecha.getHours() + ":" + fecha.getMinutes() + ":" + fecha.getSeconds()
-    console.log(req.body);
     const consulta = await pool.query(`INSERT INTO public."${locacion}"(
     "Nombre", "Unidades", "CantidadPorUnidad", "Entrada", "Salida", 
     "Perdida", "UltimaModificación", "Tipo", "Area", "UltimoUsuario") 
