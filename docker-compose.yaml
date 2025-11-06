@@ -1,0 +1,13 @@
+services:
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Holamundo123
+      POSTGRES_DB: postgres
+  app:
+    image: inventarios-server
+    ports:
+      - '3000:4000'
