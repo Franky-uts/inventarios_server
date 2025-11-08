@@ -8,7 +8,7 @@ export const pool = new pg.Pool({
 })*/
 
 //Base para Localhost
-/*import pg from 'pg'
+import pg from 'pg'
 
 export const pool = new pg.Pool({
     user: "postgres",
@@ -16,10 +16,10 @@ export const pool = new pg.Pool({
     password: "Holamundo123",
     database: "postgres",
     port: "5432"
-})*/
+})
 
 //Base para Docker
-import pg from 'pg'
+/*import pg from 'pg'
 
 export const pool = new pg.Pool({
     user: "postgres",
@@ -27,4 +27,4 @@ export const pool = new pg.Pool({
     password: "Holamundo123",
     database: "postgres",
     port: "5432"
-})
+})*/

@@ -69,7 +69,7 @@ export const editarAlmacen = async (req, res) => {
         const datos = req.body;
         const fecha = new Date(Date.now());
         const fechaTexto = fecha.toLocaleDateString() + " " + fecha.getHours() + ":" + fecha.getMinutes() + ":" + fecha.getSeconds()
-        const { rows } = await pool.query(`UPDATE public."${locacion}" SET "${columna}" = ${datos.dato}, 
+        const { rows } = await pool.query(`UPDATE public."${locacion}" SET "${columna}" = '${datos.dato}', 
             "UltimaModificación" = '${fechaTexto}', "UltimoUsuario" = '${datos.usuario}' WHERE id = ${id} RETURNING *;`)
         res.send(rows)
     } else {
