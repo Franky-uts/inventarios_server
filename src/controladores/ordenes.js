@@ -2,6 +2,15 @@ import { pool } from '../db.js';
 
 export const getOrdenes = async (req, res) => {
     const { filtro } = req.params
+    const { locacion } = req.params
+    const { rows } = await pool.query(`SELECT "id", "Artículos", "Cantidades", "Estado", "Remitente", "UltimaModificación", "Destino"
+        FROM public."Ordenes" WHERE "Destino" = '${locacion}'
+        ORDER BY "${filtro}";`);
+    res.send(rows)
+}
+
+export const getAllOrdenes = async (req, res) => {
+    const { filtro } = req.params
     const { rows } = await pool.query(`SELECT "id", "Artículos", "Cantidades", "Estado", "Remitente", "UltimaModificación", "Destino"
         FROM public."Ordenes"
         ORDER BY "${filtro}";`);

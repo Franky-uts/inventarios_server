@@ -1,8 +1,10 @@
 import { Router } from 'express';
-import { getOrdenes, añadirOrden, editarOrden, eliminarOrden } from '../controladores/ordenes.js';
+import { getOrdenes, getAllOrdenes,añadirOrden, editarOrden, eliminarOrden } from '../controladores/ordenes.js';
 const rutas = Router();
 
-rutas.get('/:filtro', getOrdenes)
+rutas.get('/:filtro/:locacion', getOrdenes)
+
+rutas.get('/:filtro', getAllOrdenes)
 
 rutas.post('/', añadirOrden)
 
