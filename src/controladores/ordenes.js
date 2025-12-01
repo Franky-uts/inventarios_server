@@ -41,7 +41,7 @@ export const editarOrden = async (req, res) => {
             const fecha = new Date(Date.now());
             const fechaTexto = fecha.toLocaleDateString() + " " + fecha.getHours() + ":" + fecha.getMinutes() + ":" + fecha.getSeconds()
             const { rows } = await pool.query(`UPDATE public."Ordenes" SET "${columna}" = '${datos.dato}', 
-            "UltimaModificación" = '${fechaTexto}', "Remitente" = '${datos.usuario}' WHERE id = ${id} RETURNING *;`)
+            "UltimaModificación" = '${fechaTexto}' WHERE id = ${id} RETURNING *;`)
             res.send(rows)
         } else {
             res.status(409).send('Error: El id no se puede modificar.')
