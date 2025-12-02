@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { añadirAlmacen, editarAlmacen, eliminarAlmacen, getAlmacen, getAlmacenBusqueda, reiniciarMovimientos } from '../controladores/almacen.js';
+import { añadirAlmacen, editarAlmacen, editarAlmacenESP, eliminarAlmacen, getAlmacen, getAlmacenBusqueda, reiniciarMovimientos } from '../controladores/almacen.js';
 const rutas = Router();
 
 rutas.get('/:locacion/:filtro', getAlmacen)
@@ -11,6 +11,8 @@ rutas.post('/:locacion', añadirAlmacen)
 rutas.delete('/:locacion/:id', eliminarAlmacen)
 
 rutas.put('/:locacion/:id/:columna', editarAlmacen)
+
+rutas.put('/:locacion/:id/:columna/ESP', editarAlmacenESP)
 
 rutas.put('/:locacion/reiniciarMovimientos', reiniciarMovimientos)
 
