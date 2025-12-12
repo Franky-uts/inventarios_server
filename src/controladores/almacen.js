@@ -5,7 +5,7 @@ export const getAlmacen = async (req, res) => {
     const { locacion } = req.params
     const consulta = await pool.query(`SELECT "id", "Nombre", "Tipo",
         "Unidades", "CantidadPorUnidad", "Area", "Entrada", 
-		"Salida", "Perdida", "UltimaModificación", "UltimoUsuario"
+		"Salida", "Perdida", "UltimaModificación", "UltimoUsuario", "CodigoBarras"
         FROM public."${locacion}"
         ORDER BY "${filtro}";`);
     if (consulta.rowCount > 0) {
@@ -21,7 +21,7 @@ export const getAlmacenBusqueda = async (req, res) => {
     const { busqueda } = req.params
     const consulta = await pool.query(`SELECT "id", "Nombre", "Tipo",
         "Unidades", "CantidadPorUnidad", "Area", "Entrada", 
-		"Salida", "Perdida", "UltimaModificación", "UltimoUsuario"
+		"Salida", "Perdida", "UltimaModificación", "UltimoUsuario", "CodigoBarras"
         FROM public."${locacion}"
         WHERE "Nombre"||"Tipo"||"Area" ILIKE '%${busqueda}%' ORDER BY "${filtro}";`);
     if (consulta.rowCount > 0) {
@@ -38,9 +38,9 @@ export const añadirAlmacen = async (req, res) => {
     const fechaTexto = fecha.toLocaleDateString() + " " + fecha.getHours() + ":" + fecha.getMinutes() + ":" + fecha.getSeconds()
     const consulta = await pool.query(`INSERT INTO public."${locacion}"(
     "Nombre", "Unidades", "CantidadPorUnidad", "Entrada", "Salida", 
-    "Perdida", "UltimaModificación", "Tipo", "Area", "UltimoUsuario") 
+    "Perdida", "UltimaModificación", "Tipo", "Area", "UltimoUsuario", "CodigoBarras") 
     VALUES ('${datos.nombre}', 0, ${datos.cantidad}, 0, 0, 0, '${fechaTexto}', '${datos.tipo}', 
-    '${datos.area}', '${datos.usuario}') RETURNING *;`);
+    '${datos.area}', '${datos.usuario}', '${datos.barras}') RETURNING *;`);
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
     } else {
