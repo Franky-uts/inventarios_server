@@ -3,7 +3,7 @@ import { pool } from '../db.js';
 export const getOrdenes = async (req, res) => {
     const { filtro } = req.params
     const { locacion } = req.params
-    const { rows } = await pool.query(`SELECT "id", "Artículos", "Cantidades", "CantidadesCubiertas", "Estado", "Remitente", "UltimaModificación", "Destino"
+    const { rows } = await pool.query(`SELECT "id", "Artículos", "Tipos", "Areas", "Cantidades", "CantidadesCubiertas", "Estado", "Remitente", "UltimaModificación", "Destino"
         FROM public."Ordenes" WHERE "Destino" = '${locacion}'
         ORDER BY "${filtro}";`);
     res.send(rows)
@@ -11,7 +11,7 @@ export const getOrdenes = async (req, res) => {
 
 export const getAllOrdenes = async (req, res) => {
     const { filtro } = req.params
-    const { rows } = await pool.query(`SELECT "id", "Artículos", "Cantidades", "CantidadesCubiertas", "Estado", "Remitente", "UltimaModificación", "Destino"
+    const { rows } = await pool.query(`SELECT "id", "Artículos", "Tipos", "Areas", "Cantidades", "CantidadesCubiertas", "Estado", "Remitente", "UltimaModificación", "Destino"
         FROM public."Ordenes"
         ORDER BY "${filtro}";`);
     res.send(rows)
@@ -27,8 +27,8 @@ export const añadirOrden = async (req, res) => {
     }
     const cantidadesCubiertas = `{${lista.toString()}}`;
     const consulta = await pool.query(`INSERT INTO public."Ordenes"(
-	"Artículos", "Cantidades", "CantidadesCubiertas", "Estado", "Remitente", "UltimaModificación", "Destino")
-	VALUES ('${datos.articulos}', '${datos.cantidades}', '${cantidadesCubiertas}', '${datos.estado}', '${datos.remitente}', '${fechaTexto}', '${datos.destino}') RETURNING *;`);
+	"Artículos", "Tipos", "Areas", "Cantidades", "CantidadesCubiertas", "Estado", "Remitente", "UltimaModificación", "Destino")
+	VALUES ('${datos.articulos}', '${datos.tipos}', '${datos.areas}', '${datos.cantidades}', '${cantidadesCubiertas}', '${datos.estado}', '${datos.remitente}', '${fechaTexto}', '${datos.destino}') RETURNING *;`);
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
     } else {
