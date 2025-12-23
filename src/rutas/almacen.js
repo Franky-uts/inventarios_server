@@ -6,14 +6,14 @@ rutas.get('/:locacion/:filtro', getAlmacen)
 
 rutas.get('/:locacion/:filtro/:busqueda', getAlmacenBusqueda)
 
-rutas.post('/:locacion', añadirAlmacen)
+rutas.post('/', añadirAlmacen)
 
-rutas.delete('/:locacion/:id', eliminarAlmacen)
-
-rutas.put('/:locacion/:id/:columna', editarAlmacen)
-
-rutas.put('/:locacion/:id/:columna/ESP', editarAlmacenESP)
+rutas.delete('/:id', eliminarAlmacen)
 
 rutas.put('/:locacion/reiniciarMovimientos', reiniciarMovimientos)
+
+rutas.put('/:id/:columna', editarAlmacen)
+
+rutas.put('/:id/:columna/ESP', editarAlmacenESP)
 
 export default rutas
