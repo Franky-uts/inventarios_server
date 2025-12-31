@@ -12,8 +12,8 @@ rutas.delete('/:id', eliminarAlmacen)
 
 rutas.put('/:locacion/reiniciarMovimientos', reiniciarMovimientos)
 
-rutas.put('/:id/:columna', editarAlmacen)
+rutas.put('/:id/ESP', editarAlmacenESP)
 
-rutas.put('/:id/:columna/ESP', editarAlmacenESP)
+rutas.put('/:id/:columna', editarAlmacen)
 
 export default rutas

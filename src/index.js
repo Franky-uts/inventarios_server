@@ -5,6 +5,7 @@ import areas from './rutas/areas.js'
 import tipos from './rutas/tipos.js'
 import usuarios from './rutas/usuarios.js'
 import ordenes from './rutas/ordenes.js'
+import historial from './rutas/historial.js'
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use('/usuarios', usuarios);
 app.use('/tipos', tipos);
 app.use('/areas', areas);
 app.use('/ordenes', ordenes);
+app.use('/historial', historial);
 
 app.use((req, res, next) => {
     res.status(404).send(`Error: No se encontro ${req.path}`)

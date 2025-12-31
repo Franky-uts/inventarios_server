@@ -12,7 +12,7 @@ export const getAlmacen = async (req, res) => {
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
     } else {
-        res.status(409).send('Error: Error en la base de datos')
+        res.status(409).send('No hay productos registrados.')
     }
 }
 
@@ -37,7 +37,7 @@ export const getAlmacenBusqueda = async (req, res) => {
 export const añadirAlmacen = async (req, res) => {
     const datos = req.body
     const fecha = new Date(Date.now());
-    const fechaTexto = fecha.toLocaleDateString() + " " + fecha.getHours() + ":" + fecha.getMinutes() + ":" + fecha.getSeconds()
+    const fechaTexto = `${fecha.getDate()}-${fecha.getMonth() + 1}-${fecha.getFullYear()} ${fecha.getHours()}:${fecha.getMinutes()}:${fecha.getSeconds()}`
     const consulta = await pool.query(`Select "id" from public."Almacen" WHERE "id" = '${datos.id}';`)
     if (consulta.rowCount < 1) {
         const { rows } = await pool.query(`INSERT INTO public."Almacen" 
@@ -68,7 +68,7 @@ export const editarAlmacen = async (req, res) => {
         const { columna } = req.params
         const datos = req.body;
         const fecha = new Date(Date.now());
-        const fechaTexto = fecha.toLocaleDateString() + " " + fecha.getHours() + ":" + fecha.getMinutes() + ":" + fecha.getSeconds()
+        const fechaTexto = `${fecha.getDate()}-${fecha.getMonth() + 1}-${fecha.getFullYear()} ${fecha.getHours()}:${fecha.getMinutes()}:${fecha.getSeconds()}`
         const { rows } = await pool.query(`UPDATE public."Almacen" SET "${columna}" = '${datos.dato}', 
             "UltimaModificación" = '${fechaTexto}', "UltimoUsuario" = '${datos.usuario}' WHERE id = '${id}' RETURNING *;`)
         res.send(rows)
@@ -80,21 +80,36 @@ export const editarAlmacen = async (req, res) => {
 export const editarAlmacenESP = async (req, res) => {
     const { id } = req.params
     const consulta = await pool.query(`Select "id" from public."Almacen" WHERE "id" = '${id}';`)
-    var texto
     if (consulta.rowCount > 0) {
-        const { columna } = req.params
         const datos = req.body;
         const fecha = new Date(Date.now());
-        const fechaTexto = fecha.toLocaleDateString() + " " + fecha.getHours() + ":" + fecha.getMinutes() + ":" + fecha.getSeconds()
-        if (columna != "Perdidas") {
-            texto = `UPDATE public."Almacen" SET "${columna}" = '${datos.dato}', "Unidades" = '${datos.unidades}', 
-            "UltimaModificación" = '${fechaTexto}', "UltimoUsuario" = '${datos.usuario}' WHERE id = '${id}' RETURNING *;`
+        const fechaTexto = `${fecha.getDate()}-${fecha.getMonth() + 1}-${fecha.getFullYear()}`
+        const fechaHora = `${fecha.getHours()}:${fecha.getMinutes()}:${fecha.getSeconds()}`
+        const historial = await pool.query(`Select * from public."Historial_ESP" WHERE "id" = '${id} ${fechaTexto}';`);
+        if (historial.rowCount > 0) {
+            const datosHistorial = historial.rows[0]
+            datosHistorial.Unidades.push(datos.unidades)
+            datosHistorial.Entradas.push(datos.entradas)
+            datosHistorial.Salidas.push(datos.salidas)
+            datosHistorial.Perdidas.push(datos.perdidas)
+            datosHistorial.ModificacionHoras.push(fechaHora)
+            datosHistorial.ModificacionUsuario.push(datos.usuario)
+            await pool.query(`UPDATE public."Historial_ESP" SET 
+                "Unidades"='{${datosHistorial.Unidades}}', "Entradas"='{${datosHistorial.Entradas}}', "Salidas"='{${datosHistorial.Salidas}}', 
+                "Perdidas"='{${datosHistorial.Perdidas}}', "PerdidaRazon"='${datos.razones}', "PerdidaCantidad"='${datos.cantidades}', 
+                "ModificacionHoras"='{${datosHistorial.ModificacionHoras}}', "ModificacionUsuario"='{${datosHistorial.ModificacionUsuario}}'
+                WHERE id = '${id} ${fechaTexto}';`)
         } else {
-            texto = `UPDATE public."Almacen" SET 
-            "PerdidaCantidad" = '${datos.cantidades}', "PerdidaRazon" = '${datos.razones}', "Unidades" = '${datos.unidades}', 
-            "UltimaModificación" = '${fechaTexto}', "UltimoUsuario" = '${datos.usuario}' WHERE id = '${id}' RETURNING *;`
+            await pool.query(`INSERT INTO public."Historial_ESP"
+                (id, "idProducto", "Fecha", "Unidades", "Entradas", "Salidas", "Perdidas", 
+                "PerdidaRazon", "PerdidaCantidad", "ModificacionHoras", "ModificacionUsuario") VALUES
+                ('${id} ${fechaTexto}','${id.substring(0, id.length - 3)}', '${fechaTexto}', '{${datos.unidades}}', 
+                '{${datos.entradas}}', '{${datos.salidas}}', '{${datos.perdidas}}','${datos.razones}', '${datos.cantidades}', 
+                '{${fechaHora}}', '{${datos.usuario}}');`)
         }
-        const { rows } = await pool.query(texto)
+        const { rows } = await pool.query(`UPDATE public."Almacen" SET 
+            "Entradas" = '${datos.entradas}', "Salidas" = '${datos.salidas}', "PerdidaCantidad" = '${datos.cantidades}', "PerdidaRazon" = '${datos.razones}', 
+            "Unidades" = '${datos.unidades}', "UltimaModificación" = '${fechaTexto} ${fechaHora}', "UltimoUsuario" = '${datos.usuario}' WHERE id = '${id}' RETURNING *;`)
         res.send(rows)
     } else {
         res.status(409).send('Error: El artículo no existe')

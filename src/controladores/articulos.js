@@ -3,7 +3,7 @@ import { pool } from '../db.js';
 export const getArticulos = async (req, res) => {
     const { filtro } = req.params
     const consulta = await pool.query(`SELECT 
-        "id", "Nombre", "Tipo", "Area", "CantidadPorUnidad", "CodigoBarras"
+        "id", "Nombre", "Tipo", "Area", "CantidadPorUnidad", "CodigoBarras", "Precio"
         FROM public."Articulos" ORDER BY "${filtro}";`);
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
@@ -16,7 +16,7 @@ export const getArticuloBusqueda = async (req, res) => {
     const { filtro } = req.params
     const { busqueda } = req.params
     const consulta = await pool.query(`SELECT 
-        "id", "Nombre", "Tipo", "Area", "CantidadPorUnidad", "CodigoBarras"
+        "id", "Nombre", "Tipo", "Area", "CantidadPorUnidad", "CodigoBarras", "Precio"
         FROM public."Articulos"
         WHERE "Nombre"||"Tipo"||"Area" ILIKE '%${busqueda}%' ORDER BY "${filtro}";`);
     if (consulta.rowCount > 0) {
@@ -42,8 +42,8 @@ export const getDatosArticulo = async (req, res) => {
 export const añadirArticulo = async (req, res) => {
     const datos = req.body
     const consulta = await pool.query(`INSERT INTO public."Articulos" 
-    ("Nombre", "Tipo", "Area", "CantidadPorUnidad", "CodigoBarras") VALUES 
-    ('${datos.nombre}', '${datos.tipo}', '${datos.area}', '${datos.cantidad}', '${datos.barras}') 
+    ("Nombre", "Tipo", "Area", "CantidadPorUnidad", "CodigoBarras", "Precio") VALUES 
+    ('${datos.nombre}', '${datos.tipo}', '${datos.area}', '${datos.cantidad}', '${datos.barras}', '${datos.precio}') 
     RETURNING *;`);
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
