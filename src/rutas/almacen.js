@@ -1,6 +1,10 @@
 import { Router } from 'express';
-import { añadirAlmacen, editarAlmacen, editarAlmacenESP, eliminarAlmacen, getAlmacen, getAlmacenBusqueda, reiniciarMovimientos } from '../controladores/almacen.js';
+import { añadirAlmacen, editarAlmacen, editarAlmacenESP, eliminarAlmacen, getAlmacen, getAlmacenBusqueda, getAlmacenBusquedaProd, getAlmacenProd, reiniciarMovimientos } from '../controladores/almacen.js';
 const rutas = Router();
+
+rutas.get('/Prod/:filtro', getAlmacenProd)
+
+rutas.get('/Prod/:filtro/:busqueda', getAlmacenBusquedaProd)
 
 rutas.get('/:locacion/:filtro', getAlmacen)
 

@@ -33,6 +33,38 @@ export const getAlmacenBusqueda = async (req, res) => {
     }
 }
 
+export const getAlmacenProd = async (req, res) => {
+    const { filtro } = req.params
+    const { locacion } = req.params
+    const consulta = await pool.query(`SELECT 
+        "Almacen".id, "Articulos"."Nombre", "Articulos"."Area", "Articulos"."Tipo", "Articulos"."CodigoBarras", 
+        "Articulos"."CantidadPorUnidad", "Unidades", "LimiteProd", "Entradas", "Salidas", 
+        "PerdidaCantidad", "PerdidaRazon", "UltimoUsuario", "UltimaModificación" 
+        FROM public."Almacen" INNER JOIN "Articulos" on "Almacen"."idProducto" = "Articulos"."id" where "inventarioNom" = 'Cedis' and "Articulos"."MateriaPrima"='True'
+        order by "${filtro}";`);
+    if (consulta.rowCount > 0) {
+        res.send(consulta.rows)
+    } else {
+        res.status(409).send('No hay productos registrados.')
+    }
+}
+
+export const getAlmacenBusquedaProd = async (req, res) => {
+    const { filtro } = req.params
+    const { locacion } = req.params
+    const { busqueda } = req.params
+    const consulta = await pool.query(`SELECT 
+        "Almacen".id, "Articulos"."Nombre", "Articulos"."Area", "Articulos"."Tipo", "Articulos"."CodigoBarras", 
+        "Articulos"."CantidadPorUnidad", "Unidades", "LimiteProd", "Entradas", "Salidas", 
+        "PerdidaCantidad", "PerdidaRazon", "UltimoUsuario", "UltimaModificación" 
+        FROM public."Almacen" INNER JOIN "Articulos" on "Almacen"."idProducto" = "Articulos"."id" where "inventarioNom" = 'Cedis' and "Articulos"."MateriaPrima"='True' 
+        and "Articulos"."Nombre"||"Articulos"."Tipo"||"Articulos"."Area" Ilike '%${busqueda}%' order by "${filtro}";`);
+    if (consulta.rowCount > 0) {
+        res.send(consulta.rows)
+    } else {
+        res.status(409).send('No hay coincidencias.')
+    }
+}
 
 export const añadirAlmacen = async (req, res) => {
     const datos = req.body
