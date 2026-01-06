@@ -42,8 +42,8 @@ export const getDatosArticulo = async (req, res) => {
 export const añadirArticulo = async (req, res) => {
     const datos = req.body
     const consulta = await pool.query(`INSERT INTO public."Articulos" 
-    ("Nombre", "Tipo", "Area", "CantidadPorUnidad", "CodigoBarras", "Precio") VALUES 
-    ('${datos.nombre}', '${datos.tipo}', '${datos.area}', '${datos.cantidad}', '${datos.barras}', '${datos.precio}') 
+    ("Nombre", "Tipo", "Area", "CantidadPorUnidad", "CodigoBarras", "Precio", "MateriaPrima") VALUES 
+    ('${datos.nombre}', '${datos.tipo}', '${datos.area}', '${datos.cantidad}', '${datos.barras}', '${datos.precio}', 'false') 
     RETURNING *;`);
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
