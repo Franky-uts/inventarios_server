@@ -1,9 +1,15 @@
 import { Router } from 'express';
-import { getHistorial, getHistorialBusqueda } from '../controladores/historial.js';
+import { getHistorial, getHistorialBusqueda, getHistorialInfo, getHistorialRango, getHistorialRangoBusqueda } from '../controladores/historial.js';
 const rutas = Router();
 
-rutas.get('/:locacion/:filtro', getHistorial)
+rutas.get('/Historial/:id/', getHistorialInfo)
+
+rutas.get('/:locacion/:filtro/', getHistorial)
 
 rutas.get('/:locacion/:filtro/:busqueda', getHistorialBusqueda)
+
+rutas.get('/:locacion/:filtro/:fechaInicial/:fechaFinal', getHistorialRango)
+
+rutas.get('/:locacion/:filtro/:fechaInicial/:fechaFinal/:busqueda', getHistorialRangoBusqueda)
 
 export default rutas

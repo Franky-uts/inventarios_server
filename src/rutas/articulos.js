@@ -1,8 +1,10 @@
 import { Router } from 'express';
-import { getArticulos, getArticuloBusqueda, añadirArticulo, editarArticulos, eliminarArticulo, getDatosArticulo } from '../controladores/articulos.js';
+import { getArticulos, getArticuloBusqueda, añadirArticulo, editarArticulos, eliminarArticulo, getDatosArticulo, getArticulo } from '../controladores/articulos.js';
 const rutas = Router();
 
 rutas.get('/almacen/:id', getDatosArticulo)
+
+rutas.get('/Articulo/:id', getArticulo)
 
 rutas.get('/:filtro', getArticulos)
 

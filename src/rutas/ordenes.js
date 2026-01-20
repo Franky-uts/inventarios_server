@@ -1,6 +1,8 @@
 import { Router } from 'express';
-import { getOrdenes, getAllOrdenes,añadirOrden, editarOrden, eliminarOrden, editarOrdenconfir } from '../controladores/ordenes.js';
+import { getOrdenes, getAllOrdenes,añadirOrden, editarOrden, eliminarOrden, editarOrdenconfir, getOrden } from '../controladores/ordenes.js';
 const rutas = Router();
+
+rutas.get('/Orden/:id', getOrden)
 
 rutas.get('/:filtro/:locacion', getOrdenes)
 

@@ -3,19 +3,30 @@ import { pool } from '../db.js';
 export const getOrdenes = async (req, res) => {
     const { filtro } = req.params
     const { locacion } = req.params
-    const { rows } = await pool.query(`SELECT "id", "Artículos", "Tipos", "Areas", "Cantidades", "CantidadesCubiertas", 
-        "ComentariosTienda", "ComentariosProveedor", "Confirmacion","Estado", "Remitente", "UltimaModificación", "Destino"
-        FROM public."Ordenes" WHERE "Destino" = '${locacion}'
+    const { rows } = await pool.query(`SELECT "id", "Estado", "Remitente", "UltimaModificación", "Usuarios"."Locacion", array_length("idProductos",1) as "CantArticulos"
+        FROM public."Ordenes" INNER JOIN "Usuarios" on "Ordenes"."Remitente" = "Usuarios"."Nombre" 
+        WHERE "Usuarios"."Locacion" = '${locacion}'
         ORDER BY "${filtro}";`);
     res.send(rows)
 }
 
 export const getAllOrdenes = async (req, res) => {
     const { filtro } = req.params
-    const { rows } = await pool.query(`SELECT "id", "Artículos", "Tipos", "Areas", "Cantidades", "CantidadesCubiertas", 
-        "ComentariosTienda", "ComentariosProveedor", "Confirmacion","Estado", "Remitente", "UltimaModificación", "Destino"
-        FROM public."Ordenes"
+    const { rows } = await pool.query(`SELECT "id", "Estado", "Remitente", "UltimaModificación", "Usuarios"."Locacion", array_length("idProductos",1) as "CantArticulos"
+        FROM public."Ordenes" INNER JOIN "Usuarios" on "Ordenes"."Remitente" = "Usuarios"."Nombre" 
         ORDER BY "${filtro}";`);
+    res.send(rows)
+}
+
+export const getOrden = async (req, res) => {
+    const { id } = req.params
+    const { rows } = await pool.query(`SELECT "Ordenes"."id", "idProductos", ARRAY_AGG("Articulos"."Nombre") AS "Articulos", ARRAY_AGG("Tipo") AS "Tipos", ARRAY_AGG("Area") AS "Areas", 
+        "Cantidades", "CantidadesCubiertas", "ComentariosTienda", "ComentariosProveedor", "Confirmacion", "Estado", "Remitente", "UltimaModificación", "Usuarios"."Locacion"
+        FROM public."Ordenes" 
+        INNER JOIN "Usuarios" ON "Ordenes"."Remitente" = "Usuarios"."Nombre" 
+        INNER JOIN "Articulos" ON "Articulos"."id" = ANY(SELECT UNNEST("idProductos") FROM "Ordenes" WHERE id = '${id}') 
+        WHERE "Ordenes"."id" = '${id}'
+        GROUP BY "Ordenes"."id", "Usuarios"."Locacion";`);
     res.send(rows)
 }
 
@@ -23,7 +34,7 @@ export const añadirOrden = async (req, res) => {
     const datos = req.body
     const fecha = new Date(Date.now());
     const fechaTexto = `${fecha.getDate()}-${fecha.getMonth() + 1}-${fecha.getFullYear()} ${fecha.getHours()}:${fecha.getMinutes()}:${fecha.getSeconds()}`
-    const length = datos.cantidades.split(",").length
+    const length = datos.cantidades.length
     var cantidadesCubiertas = new Array(length)
     var comentariosProveedor = new Array(length)
     var confirmacion = new Array(length)
@@ -35,16 +46,12 @@ export const añadirOrden = async (req, res) => {
     for (var i = 0; i < datos.comentarios.length; i++) {
         if (datos.comentarios[i].length < 1) { datos.comentarios[i] = "Sin comentarios" }
     }
-    console.log(`{INSERT INTO public."Ordenes"(
-	"Artículos", "Tipos", "Areas", "Cantidades", "CantidadesCubiertas", "ComentariosTienda", 
-    "ComentariosProveedor", "Confirmacion", "Estado", "Remitente", "UltimaModificación", "Destino") VALUES 
-    ('${datos.articulos}', '${datos.tipos}', '${datos.areas}', '${datos.cantidades}', '{${cantidadesCubiertas}}', '{${datos.comentarios.toString()}}', 
-    '{${comentariosProveedor}}', '{${confirmacion}}', '${datos.estado}', '${datos.remitente}', '${fechaTexto}', '${datos.destino}') RETURNING *;}`)
     const consulta = await pool.query(`INSERT INTO public."Ordenes"(
-	"Artículos", "Tipos", "Areas", "Cantidades", "CantidadesCubiertas", "ComentariosTienda", 
-    "ComentariosProveedor", "Confirmacion", "Estado", "Remitente", "UltimaModificación", "Destino") VALUES 
-    ('${datos.articulos}', '${datos.tipos}', '${datos.areas}', '${datos.cantidades}', '{${cantidadesCubiertas}}', '{${datos.comentarios.toString()}}', 
-    '{${comentariosProveedor}}', '{${confirmacion}}', '${datos.estado}', '${datos.remitente}', '${fechaTexto}', '${datos.destino}') RETURNING *;`);
+	"idProductos", "Cantidades", "CantidadesCubiertas", "ComentariosTienda", "ComentariosProveedor", "Confirmacion", 
+    "Estado", "Remitente", "UltimaModificación") VALUES 
+    ('{${datos.idProductos}}', '{${datos.cantidades}}', '{${cantidadesCubiertas}}', 
+    '{${datos.comentarios}}', '{${comentariosProveedor}}', '{${confirmacion}}', 
+    'En proceso',  '${datos.remitente}', '${fechaTexto}') RETURNING *;`);
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
     } else {
@@ -81,7 +88,7 @@ export const editarOrdenconfir = async (req, res) => {
             const datos = req.body;
             const fecha = new Date(Date.now());
             const fechaTexto = `${fecha.getDate()}-${fecha.getMonth() + 1}-${fecha.getFullYear()} ${fecha.getHours()}:${fecha.getMinutes()}:${fecha.getSeconds()}`
-            const { rows } = await pool.query(`UPDATE public."Ordenes" SET "Estado" = '${datos.estado}', "Confirmacion" = '${datos.confirmacion}', 
+            const { rows } = await pool.query(`UPDATE public."Ordenes" SET "Estado" = '${datos.estado}', "Confirmacion" = '{${datos.confirmacion}}', 
             "UltimaModificación" = '${fechaTexto}' WHERE id = ${id} RETURNING *;`)
             res.send(rows)
         } else {
