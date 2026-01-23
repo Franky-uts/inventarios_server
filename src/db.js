@@ -18,6 +18,16 @@ export const pool = new pg.Pool({
     port: "5432"
 })
 
+
+export function fecha() {
+    const fechaActual = new Date(Date.now());
+    const fecha = {
+        dia: `${fechaActual.getDate()}-${fechaActual.getMonth() + 1}-${fechaActual.getFullYear()}`,
+        hora: `${fechaActual.getHours()}:${fechaActual.getMinutes()}:${fechaActual.getSeconds()}`,
+    }
+    return fecha;
+}
+
 //Base para Docker
 /*import pg from 'pg'
 

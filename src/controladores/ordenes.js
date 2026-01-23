@@ -1,4 +1,5 @@
 import { pool } from '../db.js';
+import { fecha } from '../db.js';
 
 export const getOrdenes = async (req, res) => {
     const { filtro } = req.params
@@ -20,8 +21,10 @@ export const getAllOrdenes = async (req, res) => {
 
 export const getOrden = async (req, res) => {
     const { id } = req.params
-    const { rows } = await pool.query(`SELECT "Ordenes"."id", "idProductos", ARRAY_AGG("Articulos"."Nombre") AS "Articulos", ARRAY_AGG("Tipo") AS "Tipos", ARRAY_AGG("Area") AS "Areas", 
-        "Cantidades", "CantidadesCubiertas", "ComentariosTienda", "ComentariosProveedor", "Confirmacion", "Estado", "Remitente", "UltimaModificación", "Usuarios"."Locacion"
+    const { rows } = await pool.query(`SELECT "Ordenes"."id", "idProductos", 
+        ARRAY_AGG("Articulos"."Nombre") AS "Articulos", ARRAY_AGG("Tipo") AS "Tipos", ARRAY_AGG("Area") AS "Areas", 
+        "Cantidades", "CantidadesCubiertas", "ComentariosTienda", "ComentariosProveedor", "Confirmacion", 
+        "Estado", "Remitente", "UltimaModificación", "Usuarios"."Locacion"
         FROM public."Ordenes" 
         INNER JOIN "Usuarios" ON "Ordenes"."Remitente" = "Usuarios"."Nombre" 
         INNER JOIN "Articulos" ON "Articulos"."id" = ANY(SELECT UNNEST("idProductos") FROM "Ordenes" WHERE id = '${id}') 
@@ -32,8 +35,7 @@ export const getOrden = async (req, res) => {
 
 export const añadirOrden = async (req, res) => {
     const datos = req.body
-    const fecha = new Date(Date.now());
-    const fechaTexto = `${fecha.getDate()}-${fecha.getMonth() + 1}-${fecha.getFullYear()} ${fecha.getHours()}:${fecha.getMinutes()}:${fecha.getSeconds()}`
+    const fechaTexto = fecha()
     const length = datos.cantidades.length
     var cantidadesCubiertas = new Array(length)
     var comentariosProveedor = new Array(length)
@@ -51,7 +53,7 @@ export const añadirOrden = async (req, res) => {
     "Estado", "Remitente", "UltimaModificación") VALUES 
     ('{${datos.idProductos}}', '{${datos.cantidades}}', '{${cantidadesCubiertas}}', 
     '{${datos.comentarios}}', '{${comentariosProveedor}}', '{${confirmacion}}', 
-    'En proceso',  '${datos.remitente}', '${fechaTexto}') RETURNING *;`);
+    'En proceso',  '${datos.remitente}', '${fechaTexto.dia} ${fechaTexto.hora}') RETURNING *;`);
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
     } else {
@@ -66,10 +68,9 @@ export const editarOrden = async (req, res) => {
         const { columna } = req.params
         if (columna != 'id') {
             const datos = req.body;
-            const fecha = new Date(Date.now());
-            const fechaTexto = `${fecha.getDate()}-${fecha.getMonth() + 1}-${fecha.getFullYear()} ${fecha.getHours()}:${fecha.getMinutes()}:${fecha.getSeconds()}`
+            const fechaTexto = fecha()
             const { rows } = await pool.query(`UPDATE public."Ordenes" SET "${columna}" = '${datos.dato}', 
-            "UltimaModificación" = '${fechaTexto}' WHERE id = ${id} RETURNING *;`)
+            "UltimaModificación" = '${fechaTexto.dia} ${fechaTexto.hora}' WHERE id = ${id} RETURNING *;`)
             res.send(rows)
         } else {
             res.status(409).send('Error: El id no se puede modificar.')
@@ -86,10 +87,9 @@ export const editarOrdenconfir = async (req, res) => {
         const { columna } = req.params
         if (columna != 'id') {
             const datos = req.body;
-            const fecha = new Date(Date.now());
-            const fechaTexto = `${fecha.getDate()}-${fecha.getMonth() + 1}-${fecha.getFullYear()} ${fecha.getHours()}:${fecha.getMinutes()}:${fecha.getSeconds()}`
+            const fechaTexto = fecha()
             const { rows } = await pool.query(`UPDATE public."Ordenes" SET "Estado" = '${datos.estado}', "Confirmacion" = '{${datos.confirmacion}}', 
-            "UltimaModificación" = '${fechaTexto}' WHERE id = ${id} RETURNING *;`)
+            "UltimaModificación" = '${fechaTexto.dia} ${fechaTexto.hora}' WHERE id = ${id} RETURNING *;`)
             res.send(rows)
         } else {
             res.status(409).send('Error: El id no se puede modificar.')

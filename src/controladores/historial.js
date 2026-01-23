@@ -1,17 +1,19 @@
 import { pool } from '../db.js';
 
 export const getHistorialInfo = async (req, res) => {
+    const { locacion } = req.params
     const { id } = req.params
+    const { fecha } = req.params
     const consulta = await pool.query(`SELECT 
-        "Historial_ESP"."id", to_char("Fecha",'DD-MM-YYYY') as "Fecha", "Articulos"."Nombre", "Articulos"."Area", 
+        "Historial_ESP"."idProducto", to_char("Fecha",'DD-MM-YYYY') as "Fecha", "Articulos"."Nombre", "Articulos"."Area", 
         array_length("ModificacionHoras", 1) as "Movimientos","Unidades", "Entradas", "Salidas", 
         "Perdidas", "PerdidaRazon", "PerdidaCantidad", "ModificacionHoras", "ModificacionUsuario" 
 	    FROM public."Historial_ESP" INNER JOIN "Articulos" on "Historial_ESP"."idProducto" = "Articulos"."id" 
-        Where "Historial_ESP"."id" = '${id}';`);
+        Where "Historial_ESP"."Almacen" = '${locacion}' And "Historial_ESP"."idProducto" = '${id}' And "Historial_ESP"."Fecha" = '${fecha}';`);
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
     } else {
-        res.status(409).send('El regustro no existe.')
+        res.status(409).send('El registro no existe.')
     }
 }
 
@@ -23,7 +25,7 @@ export const getHistorial = async (req, res) => {
         tabla = "Historial_ESP"
     }
     const consulta = await pool.query(`SELECT 
-        "Historial_ESP"."id", to_char("Fecha",'DD-MM-YYYY') as "Fecha", "Articulos"."Nombre", "Articulos"."Area", 
+        "Historial_ESP"."idProducto", to_char("Fecha",'DD-MM-YYYY') as "Fecha", "Articulos"."Nombre", "Articulos"."Area", 
         array_length("ModificacionHoras", 1) as "Movimientos", "Unidades", "Entradas", "Salidas", 
         "Perdidas", "PerdidaRazon", "PerdidaCantidad", "ModificacionHoras", "ModificacionUsuario" 
 	    FROM public."Historial_ESP" INNER JOIN "Articulos" on "Historial_ESP"."idProducto" = "Articulos"."id" 
@@ -45,7 +47,7 @@ export const getHistorialBusqueda = async (req, res) => {
         tabla = "Historial_ESP"
     }
     const consulta = await pool.query(`SELECT 
-        "Historial_ESP"."id", to_char("Fecha",'DD-MM-YYYY') as "Fecha", "Articulos"."Nombre", "Articulos"."Area", 
+        "Historial_ESP"."idProducto", to_char("Fecha",'DD-MM-YYYY') as "Fecha", "Articulos"."Nombre", "Articulos"."Area", 
         array_length("ModificacionHoras", 1) as "Movimientos", "Unidades", "Entradas", "Salidas", 
         "Perdidas", "PerdidaRazon", "PerdidaCantidad", "ModificacionHoras", "ModificacionUsuario" 
 	    FROM public."Historial_ESP" INNER JOIN "Articulos" on "Historial_ESP"."idProducto" = "Articulos"."id" 
@@ -69,7 +71,7 @@ export const getHistorialRango = async (req, res) => {
         tabla = "Historial_ESP"
     }
     const consulta = await pool.query(`SELECT 
-        "Historial_ESP"."id", to_char("Fecha",'DD-MM-YYYY') as "Fecha", "Articulos"."Nombre", "Articulos"."Area", 
+        "Historial_ESP"."idProducto", to_char("Fecha",'DD-MM-YYYY') as "Fecha", "Articulos"."Nombre", "Articulos"."Area", 
         array_length("ModificacionHoras", 1) as "Movimientos", "Unidades", "Entradas", "Salidas", 
         "Perdidas", "PerdidaRazon", "PerdidaCantidad", "ModificacionHoras", "ModificacionUsuario" 
 	    FROM public."Historial_ESP" INNER JOIN "Articulos" on "Historial_ESP"."idProducto" = "Articulos"."id" 
@@ -94,7 +96,7 @@ export const getHistorialRangoBusqueda = async (req, res) => {
         tabla = "Historial_ESP"
     }
     const consulta = await pool.query(`SELECT 
-        "Historial_ESP"."id", to_char("Fecha",'DD-MM-YYYY') as "Fecha", "Articulos"."Nombre", "Articulos"."Area", 
+        "Historial_ESP"."idProducto", to_char("Fecha",'DD-MM-YYYY') as "Fecha", "Articulos"."Nombre", "Articulos"."Area", 
         array_length("ModificacionHoras", 1) as "Movimientos", "Unidades", "Entradas", "Salidas", 
         "Perdidas", "PerdidaRazon", "PerdidaCantidad", "ModificacionHoras", "ModificacionUsuario" 
 	    FROM public."Historial_ESP" INNER JOIN "Articulos" on "Historial_ESP"."idProducto" = "Articulos"."id" 

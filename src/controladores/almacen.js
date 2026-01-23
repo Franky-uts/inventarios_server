@@ -1,4 +1,5 @@
 import { pool } from '../db.js';
+import { fecha } from '../db.js';
 
 export const getAlmacen = async (req, res) => {
     const { filtro } = req.params
@@ -103,15 +104,14 @@ export const getAlmacenProducto = async (req, res) => {
 
 export const añadirAlmacen = async (req, res) => {
     const datos = req.body
-    const fecha = new Date(Date.now());
-    const fechaTexto = `${fecha.getDate()}-${fecha.getMonth() + 1}-${fecha.getFullYear()} ${fecha.getHours()}:${fecha.getMinutes()}:${fecha.getSeconds()}`
+    const fechaTexto = fecha()
     const existencia = await pool.query(`Select "id" from public."Articulos" WHERE "id" = '${datos.id}';`)
     if (existencia.rowCount > 0) {
         const consulta = await pool.query(`Select "idProducto" from public."Almacen" WHERE "idProducto" = '${datos.id}' AND "inventarioNom" = '${datos.locacion}';`)
         if (consulta.rowCount < 1) {
             const { rows } = await pool.query(`INSERT INTO public."Almacen" 
                 ("idProducto", "inventarioNom", "Unidades", "LimiteProd", "Entradas", "Salidas", "PerdidaCantidad", "PerdidaRazon", "UltimoUsuario", "UltimaModificación")  
-                VALUES (${datos.id}, '${datos.locacion}', 0, ${datos.limite}, 0, 0, '{}', '{}', '${datos.usuario}', '${fechaTexto}') 
+                VALUES (${datos.id}, '${datos.locacion}', 0, ${datos.limite}, 0, 0, '{}', '{}', '${datos.usuario}', '${fechaTexto.dia} ${fechaTexto.hora}') 
                 RETURNING *;`);
             res.send(rows)
         } else {
@@ -141,10 +141,9 @@ export const editarAlmacen = async (req, res) => {
     if (consulta.rowCount > 0) {
         const { columna } = req.params
         const datos = req.body;
-        const fecha = new Date(Date.now());
-        const fechaTexto = `${fecha.getDate()}-${fecha.getMonth() + 1}-${fecha.getFullYear()} ${fecha.getHours()}:${fecha.getMinutes()}:${fecha.getSeconds()}`
+        const fechaTexto = fecha();
         const { rows } = await pool.query(`UPDATE public."Almacen" SET "${columna}" = '${datos.dato}', 
-            "UltimaModificación" = '${fechaTexto}', "UltimoUsuario" = '${datos.usuario}' 
+            "UltimaModificación" = '${fechaTexto.dia} ${fechaTexto.hora}', "UltimoUsuario" = '${datos.usuario}' 
             WHERE "idProducto" = '${id}' AND "inventarioNom" = '${locacion}' RETURNING *;`)
         res.send(rows)
     } else {
@@ -160,10 +159,9 @@ export const editarAlmacenES = async (req, res) => {
     if (consulta.rowCount > 0) {
         const producto = consulta.rows[0]
         const datos = req.body;
-        const fecha = new Date(Date.now());
-        const fechaTexto = `${fecha.getDate()}-${fecha.getMonth() + 1}-${fecha.getFullYear()}`
-        const fechaHora = `${fecha.getHours()}:${fecha.getMinutes()}:${fecha.getSeconds()}`
-        const historial = await pool.query(`Select * from public."Historial_ESP" WHERE "id" = '${id} ${fechaTexto}';`);
+        const fechaTexto = fecha();
+        const historial = await pool.query(`Select * from public."Historial_ESP" 
+            WHERE "Historial_ESP"."Almacen" = '${locacion}' And "Historial_ESP"."idProducto" = '${id}' And "Historial_ESP"."Fecha" = '${fechaTexto.dia}';`);
         const unidades = producto.Unidades + datos.entradas - datos.salidas
         const entradas = producto.Entradas + datos.entradas
         const salidas = producto.Salidas + datos.salidas
@@ -173,24 +171,24 @@ export const editarAlmacenES = async (req, res) => {
             datosHistorial.Entradas.push(entradas)
             datosHistorial.Salidas.push(salidas)
             datosHistorial.Perdidas.push(producto.PerdidaCantidad.length)
-            datosHistorial.ModificacionHoras.push(fechaHora)
+            datosHistorial.ModificacionHoras.push(fechaTexto.hora)
             datosHistorial.ModificacionUsuario.push(datos.usuario)
             await pool.query(`UPDATE public."Historial_ESP" SET 
                 "Unidades"='{${datosHistorial.Unidades}}', "Entradas"='{${datosHistorial.Entradas}}', 
                 "Salidas"='{${datosHistorial.Salidas}}', "Perdidas"='{${datosHistorial.Perdidas}}', 
                 "ModificacionHoras"='{${datosHistorial.ModificacionHoras}}', "ModificacionUsuario"='{${datosHistorial.ModificacionUsuario}}'
-                WHERE id = '${id} ${fechaTexto}';`)
+                WHERE "Historial_ESP"."Almacen" = '${locacion}' And "Historial_ESP"."idProducto" = '${id}' And "Historial_ESP"."Fecha" = '${fechaTexto.dia}';`)
         } else {
             await pool.query(`INSERT INTO public."Historial_ESP"
-                (id, "idProducto", "Fecha", "Unidades", "Entradas", "Salidas", "Perdidas", 
+                ("idProducto", "Fecha", "Unidades", "Entradas", "Salidas", "Perdidas", 
                 "PerdidaRazon", "PerdidaCantidad", "ModificacionHoras", "ModificacionUsuario", "Almacen") VALUES
-                ('${id} ${fechaTexto}','${id}', '${fechaTexto}', '{${unidades}}', 
+                ('${id}', '${fechaTexto.dia}', '{${unidades}}', 
                 '{${entradas}}', '{${salidas}}', '{${producto.PerdidaCantidad.length}}',
-                '{${producto.PerdidaRazon}}', '{${producto.PerdidaCantidad}}', '{${fechaHora}}', '{${datos.usuario}}', '${datos.almacen}');`)
+                '{${producto.PerdidaRazon}}', '{${producto.PerdidaCantidad}}', '{${fechaTexto.hora}}', '{${datos.usuario}}', '${datos.almacen}');`)
         }
         const { rows } = await pool.query(`UPDATE public."Almacen" SET 
             "Entradas" = '${entradas}', "Salidas" = '${salidas}', "Unidades" = '${unidades}', 
-            "UltimaModificación" = '${fechaTexto} ${fechaHora}', "UltimoUsuario" = '${datos.usuario}' 
+            "UltimaModificación" = '${fechaTexto.dia} ${fechaTexto.hora}', "UltimoUsuario" = '${datos.usuario}' 
             WHERE "idProducto" = '${id}' AND "inventarioNom" = '${locacion}' RETURNING *;`)
         res.send(rows)
     } else {
@@ -208,10 +206,9 @@ export const editarAlmacenPerdidas = async (req, res) => {
     if (consulta.rowCount > 0) {
         const producto = consulta.rows[0]
         const datos = req.body;
-        const fecha = new Date(Date.now());
-        const fechaTexto = `${fecha.getDate()}-${fecha.getMonth() + 1}-${fecha.getFullYear()}`
-        const fechaHora = `${fecha.getHours()}:${fecha.getMinutes()}:${fecha.getSeconds()}`
-        const historial = await pool.query(`Select * from public."Historial_ESP" WHERE "id" = '${id} ${fechaTexto}';`);
+        const fechaTexto = fecha()
+        const historial = await pool.query(`Select * from public."Historial_ESP" 
+            WHERE "Historial_ESP"."Almacen" = '${locacion}' And "Historial_ESP"."idProducto" = '${id}' And "Historial_ESP"."Fecha" = '${fechaTexto.dia}';`)
         const unidades = producto.Unidades - datos.cantidad / producto.CantidadPorUnidad
         producto.PerdidaCantidad.push(datos.cantidad)
         const cantidades = producto.PerdidaCantidad
@@ -224,24 +221,24 @@ export const editarAlmacenPerdidas = async (req, res) => {
             datosHistorial.Entradas.push(producto.Entradas)
             datosHistorial.Salidas.push(producto.Salidas)
             datosHistorial.Perdidas.push(perdidas)
-            datosHistorial.ModificacionHoras.push(fechaHora)
+            datosHistorial.ModificacionHoras.push(fechaTexto.hora)
             datosHistorial.ModificacionUsuario.push(datos.usuario)
             await pool.query(`UPDATE public."Historial_ESP" SET 
                 "Unidades"='{${datosHistorial.Unidades}}', "Entradas"='{${datosHistorial.Entradas}}', "Salidas"='{${datosHistorial.Salidas}}', 
                 "Perdidas"='{${datosHistorial.Perdidas}}', "PerdidaRazon"='{${razones}}', "PerdidaCantidad"='{${cantidades}}', 
                 "ModificacionHoras"='{${datosHistorial.ModificacionHoras}}', "ModificacionUsuario"='{${datosHistorial.ModificacionUsuario}}'
-                WHERE id = '${id} ${fechaTexto}';`)
+                WHERE "Historial_ESP"."Almacen" = '${locacion}' And "Historial_ESP"."idProducto" = '${id}' And "Historial_ESP"."Fecha" = '${fechaTexto.dia}';`)
         } else {
             await pool.query(`INSERT INTO public."Historial_ESP"
-                (id, "idProducto", "Fecha", "Unidades", "Entradas", "Salidas", "Perdidas", 
+                ("idProducto", "Fecha", "Unidades", "Entradas", "Salidas", "Perdidas", 
                 "PerdidaRazon", "PerdidaCantidad", "ModificacionHoras", "ModificacionUsuario", "Almacen") VALUES
-                ('${id} ${fechaTexto}','${id}', '${fechaTexto}', '{${unidades}}', 
+                ('${id}', '${fechaTexto.dia}', '{${unidades}}', 
                 '{${producto.Entradas}}', '{${producto.Salidas}}', '{${perdidas}}','{${razones}}', '{${cantidades}}', 
-                '{${fechaHora}}', '{${datos.usuario}}', '${datos.almacen}');`)
+                '{${fechaTexto.hora}}', '{${datos.usuario}}', '${datos.almacen}');`)
         }
         const { rows } = await pool.query(`UPDATE public."Almacen" SET 
             "PerdidaCantidad" = '{${cantidades}}', "PerdidaRazon" = '{${razones}}', "Unidades" = '${unidades}', 
-            "UltimaModificación" = '${fechaTexto} ${fechaHora}', "UltimoUsuario" = '${datos.usuario}' 
+            "UltimaModificación" = '${fechaTexto.dia} ${fechaTexto.hora}', "UltimoUsuario" = '${datos.usuario}' 
             WHERE "idProducto" = '${id}' AND "inventarioNom" = '${locacion}' RETURNING *;`)
         res.send(rows)
     } else {
