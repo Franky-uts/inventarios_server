@@ -16,12 +16,12 @@ rutas.post('/', añadirAlmacen)
 
 rutas.delete('/:locacion/:id', eliminarAlmacen)
 
-rutas.put('/:locacion/reiniciarMovimientos', reiniciarMovimientos)
+rutas.put('Editar/:id/:columna', editarAlmacen)
 
-rutas.put('/:locacion/:id/ES', editarAlmacenES)
+rutas.put('/ES/:id/', editarAlmacenES)
 
-rutas.put('/:locacion/:id/Perdidas', editarAlmacenPerdidas)
+rutas.put('/Perdidas/:id/', editarAlmacenPerdidas)
 
-rutas.put('/:locacion/:id/:columna', editarAlmacen)
+rutas.put('/reiniciarMovimientos/:usuario', reiniciarMovimientos)
 
 export default rutas

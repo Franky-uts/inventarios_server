@@ -14,6 +14,6 @@ rutas.post('/', añadirArticulo)
 
 rutas.delete('/:id', eliminarArticulo)
 
-rutas.put('/:id/:columna', editarArticulos)
+rutas.put('/:id', editarArticulos)
 
 export default rutas

@@ -29,7 +29,7 @@ app.use('/ordenes', ordenes);
 app.use('/historial', historial);
 
 app.use((req, res, next) => {
-    res.status(404).send(`Error: No se encontro ${req.path}`)
+    res.status(404).send(`Error: No se encontro la ruta: ${req.path}`)
 })
 
 const port = process.env.PORT || 3000;
