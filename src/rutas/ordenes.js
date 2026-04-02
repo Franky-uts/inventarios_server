@@ -4,9 +4,9 @@ const rutas = Router();
 
 rutas.get('/Orden/:id', getOrden)
 
-rutas.get('/:filtro/:locacion', getOrdenes)
+rutas.get('/:filtro/:locacion/:estados', getOrdenes)
 
-rutas.get('/:filtro', getAllOrdenes)
+rutas.get('/:filtro/:estados', getAllOrdenes)
 
 rutas.post('/', añadirOrden)
 

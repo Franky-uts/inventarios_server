@@ -70,7 +70,7 @@ export const eliminarArticulo = async (req, res) => {
 export const editarArticulos = async (req, res) => {
     const { id } = req.params
     const datos = req.body;
-    const consulta = await pool.query(`Select * From "updArticulo"(${id}, '${datos.columna}', '${datos.dato}');`)
+    const consulta = await pool.query(`Select * From "updArticulo"(${id}, '${datos.columna}', ${datos.dato});`)
     var code = 409
     var mensaje = 'Error: No se pudo conectar con la base de datos.'
     if (consulta.rowCount > 0) {

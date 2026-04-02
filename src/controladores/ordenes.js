@@ -4,7 +4,8 @@ import { fecha } from '../db.js';
 export const getOrdenes = async (req, res) => {
     const { filtro } = req.params
     const { locacion } = req.params
-    const consulta = await pool.query(`Select * From "getOrdenes"('${locacion}') Order By "${filtro}";`);
+    const { estados } = req.params
+    const consulta = await pool.query(`Select * From "getOrdenes"('${locacion}') Where "Estado" = Any(Array${estados}) Order By "${filtro}";`);
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
     } else {
@@ -14,7 +15,8 @@ export const getOrdenes = async (req, res) => {
 
 export const getAllOrdenes = async (req, res) => {
     const { filtro } = req.params
-    const consulta = await pool.query(`Select * From "getOrdenes"('') Order By "${filtro}";`);
+    const { estados } = req.params
+    const consulta = await pool.query(`Select * From "getOrdenes"('') Where "Estado" = Any(Array${estados}) Order By "${filtro}";`);
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
     } else {
@@ -38,6 +40,8 @@ export const añadirOrden = async (req, res) => {
     for (var i = 0; i < datos.comentarios.length; i++) {
         if (datos.comentarios[i].length < 1) { datos.comentarios[i] = `'Sin comentarios'` }
     }
+    console.log(`Select * From "addOrden"(Array[${datos.idProductos}], Array[${datos.cantidades}], 
+    Array[${datos.comentarios}], '${datos.remitente}', '${fechaTexto.dia} ${fechaTexto.hora}');`);
     const consulta = await pool.query(`Select * From "addOrden"(Array[${datos.idProductos}], Array[${datos.cantidades}], 
     Array[${datos.comentarios}], '${datos.remitente}', '${fechaTexto.dia} ${fechaTexto.hora}');`);
     var code = 409
@@ -53,8 +57,9 @@ export const añadirOrden = async (req, res) => {
 export const editarOrden = async (req, res) => {
     const { id } = req.params
     const { columna } = req.params
+    const datos = req.body
     const fechaTexto = fecha()
-    const consulta = await pool.query(`Select * From "updOrden"(${id}, '${columna}', '${datos.dato}', '${fechaTexto.dia} ${fechaTexto.hora}');`)
+    const consulta = await pool.query(`Select * From "updOrden"(${id}, '${columna}', ${datos.dato}, '${fechaTexto.dia} ${fechaTexto.hora}');`)
     var code = 409
     var mensaje = 'Error: No se pudo conectar con la base de datos.'
     if (consulta.rowCount > 0) {
@@ -69,7 +74,23 @@ export const editarOrdenconfir = async (req, res) => {
     const { id } = req.params
     const datos = req.body;
     const fechaTexto = fecha()
+    console.log(`Select * From "updOrdenConf"(${id}, '${datos.estado}', Array[${datos.confirmacion}], '${fechaTexto.dia} ${fechaTexto.hora}');`)
     const consulta = await pool.query(`Select * From "updOrdenConf"(${id}, '${datos.estado}', Array[${datos.confirmacion}], '${fechaTexto.dia} ${fechaTexto.hora}');`)
+    var code = 409
+    var mensaje = 'Error: No se pudo conectar con la base de datos.'
+    if (consulta.rowCount > 0) {
+        const respuesta = consulta.rows[0];
+        code = respuesta.Código
+        mensaje = respuesta.Mensaje
+    }
+    res.status(code).send(mensaje)
+}
+
+export const editarOrdenCantCub = async (req, res) => {
+    const { id } = req.params
+    const datos = req.body;
+    const fechaTexto = fecha()
+    const consulta = await pool.query(`Select * From "updOrdenCantCub"(${id}, '${datos.estado}', Array[${datos.confirmacion}], '${fechaTexto.dia} ${fechaTexto.hora}');`)
     var code = 409
     var mensaje = 'Error: No se pudo conectar con la base de datos.'
     if (consulta.rowCount > 0) {
