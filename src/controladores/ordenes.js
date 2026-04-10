@@ -5,7 +5,9 @@ export const getOrdenes = async (req, res) => {
     const { filtro } = req.params
     const { locacion } = req.params
     const { estados } = req.params
-    const consulta = await pool.query(`Select * From "getOrdenes"('${locacion}') Where "Estado" = Any(Array${estados}) Order By "${filtro}";`);
+    const consulta = await pool.query(filtro == 'id'
+        ? `Select * From "getOrdenes"('${locacion}') Where "Estado" = Any(Array${estados}) Order By "${filtro}" desc;`
+        : `Select * From "getOrdenes"('${locacion}') Where "Estado" = Any(Array${estados}) Order By "${filtro}", id desc;`);
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
     } else {
@@ -16,7 +18,9 @@ export const getOrdenes = async (req, res) => {
 export const getAllOrdenes = async (req, res) => {
     const { filtro } = req.params
     const { estados } = req.params
-    const consulta = await pool.query(`Select * From "getOrdenes"('') Where "Estado" = Any(Array${estados}) Order By "${filtro}";`);
+    const consulta = await pool.query(filtro == 'id'
+        ? `Select * From "getOrdenes"('') Where "Estado" = Any(Array${estados}) Order By "${filtro}" desc;`
+        : `Select * From "getOrdenes"('') Where "Estado" = Any(Array${estados}) Order By "${filtro}", id desc;`);
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
     } else {
