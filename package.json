@@ -10,7 +10,7 @@
     "dev": "nodemon node src/index.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Frank",
   "license": "ISC",
   "devDependencies": {
     "nodemon": "^3.1.10"
