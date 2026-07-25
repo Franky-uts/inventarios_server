@@ -44,8 +44,7 @@ export const añadirOrden = async (req, res) => {
     for (var i = 0; i < datos.comentarios.length; i++) {
         if (datos.comentarios[i].length < 1) { datos.comentarios[i] = `'Sin comentarios'` }
     }
-    console.log(`Select * From "addOrden"(Array[${datos.idProductos}], Array[${datos.cantidades}], 
-    Array[${datos.comentarios}], '${datos.remitente}', '${fechaTexto.dia} ${fechaTexto.hora}');`);
+    console.log(datos.remitente);
     const consulta = await pool.query(`Select * From "addOrden"(Array[${datos.idProductos}], Array[${datos.cantidades}], 
     Array[${datos.comentarios}], '${datos.remitente}', '${fechaTexto.dia} ${fechaTexto.hora}');`);
     var code = 409
