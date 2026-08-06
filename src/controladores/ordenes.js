@@ -77,7 +77,7 @@ export const editarOrdenconfir = async (req, res) => {
     const { id } = req.params
     const datos = req.body;
     const fechaTexto = fecha()
-    console.log(`Select * From "updOrdenConf"(${id}, '${datos.estado}', Array[${datos.confirmacion}], '${fechaTexto.dia} ${fechaTexto.hora}');`)
+    //console.log(`Select * From "updOrdenConf"(${id}, '${datos.estado}', Array[${datos.confirmacion}], '${fechaTexto.dia} ${fechaTexto.hora}');`)
     const consulta = await pool.query(`Select * From "updOrdenConf"(${id}, '${datos.estado}', Array[${datos.confirmacion}], '${fechaTexto.dia} ${fechaTexto.hora}');`)
     var code = 409
     var mensaje = 'Error: No se pudo conectar con la base de datos.'
