@@ -8,6 +8,7 @@ export const getOrdenes = async (req, res) => {
     const consulta = await pool.query(filtro == 'id'
         ? `Select * From "getOrdenes"('${locacion}') Where "Estado" = Any(Array${estados}) Order By "${filtro}" desc;`
         : `Select * From "getOrdenes"('${locacion}') Where "Estado" = Any(Array${estados}) Order By "${filtro}", id desc;`);
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
     } else {
@@ -21,6 +22,7 @@ export const getAllOrdenes = async (req, res) => {
     const consulta = await pool.query(filtro == 'id'
         ? `Select * From "getOrdenes"('') Where "Estado" = Any(Array${estados}) Order By "${filtro}" desc;`
         : `Select * From "getOrdenes"('') Where "Estado" = Any(Array${estados}) Order By "${filtro}", id desc;`);
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
     } else {
@@ -31,6 +33,7 @@ export const getAllOrdenes = async (req, res) => {
 export const getOrden = async (req, res) => {
     const { id } = req.params
     const consulta = await pool.query(`Select * From "getOrden"(${id});`);
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
     } else {
@@ -49,6 +52,7 @@ export const añadirOrden = async (req, res) => {
     Array[${datos.comentarios}], '${datos.remitente}', '${fechaTexto.dia} ${fechaTexto.hora}');`);
     var code = 409
     var mensaje = 'Error: No se pudo conectar con la base de datos.'
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         const respuesta = consulta.rows[0];
         code = respuesta.Código
@@ -65,6 +69,7 @@ export const editarOrden = async (req, res) => {
     const consulta = await pool.query(`Select * From "updOrden"(${id}, '${columna}', ${datos.dato}, '${fechaTexto.dia} ${fechaTexto.hora}');`)
     var code = 409
     var mensaje = 'Error: No se pudo conectar con la base de datos.'
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         const respuesta = consulta.rows[0];
         code = respuesta.Código
@@ -81,6 +86,7 @@ export const editarOrdenconfir = async (req, res) => {
     const consulta = await pool.query(`Select * From "updOrdenConf"(${id}, '${datos.estado}', Array[${datos.confirmacion}], '${fechaTexto.dia} ${fechaTexto.hora}');`)
     var code = 409
     var mensaje = 'Error: No se pudo conectar con la base de datos.'
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         const respuesta = consulta.rows[0];
         code = respuesta.Código
@@ -96,6 +102,7 @@ export const editarOrdenCantCub = async (req, res) => {
     const consulta = await pool.query(`Select * From "updOrdenCantCub"(${id}, '${datos.estado}', Array[${datos.confirmacion}], '${fechaTexto.dia} ${fechaTexto.hora}');`)
     var code = 409
     var mensaje = 'Error: No se pudo conectar con la base de datos.'
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         const respuesta = consulta.rows[0];
         code = respuesta.Código
@@ -109,6 +116,7 @@ export const eliminarOrden = async (req, res) => {
     const consulta = await pool.query(`Select * From "delOrden"(${id});`)
     var code = 409
     var mensaje = 'Error: No se pudo conectar con la base de datos.'
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         const respuesta = consulta.rows[0];
         code = respuesta.Código

@@ -5,6 +5,7 @@ export const getHistorialInfo = async (req, res) => {
     const { id } = req.params
     const { fecha } = req.params
     const consulta = await pool.query(`Select * From "getHistorialInfo"(${id},'${locacion}','${fecha}');`);
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
     } else {
@@ -16,6 +17,7 @@ export const getHistorial = async (req, res) => {
     const { filtro } = req.params
     const { locacion } = req.params
     const consulta = await pool.query(`Select * From "getHistorial"('${locacion}', '', '', '') Order By "${filtro}";`);
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
     } else {
@@ -28,6 +30,7 @@ export const getHistorialBusqueda = async (req, res) => {
     const { locacion } = req.params
     const { busqueda } = req.params
     const consulta = await pool.query(`Select * From "getHistorial"('${locacion}', '${busqueda}', '', '') Order By "${filtro}";`);
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
     } else {
@@ -41,6 +44,7 @@ export const getHistorialRango = async (req, res) => {
     const { fechaInicial } = req.params
     const { fechaFinal } = req.params
     const consulta = await pool.query(`Select * From "getHistorial"('${locacion}', '', '${fechaInicial}', '${fechaFinal}') Order By "${filtro}";`);
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
     } else {
@@ -55,6 +59,7 @@ export const getHistorialRangoBusqueda = async (req, res) => {
     const { fechaInicial } = req.params
     const { fechaFinal } = req.params
     const consulta = await pool.query(`Select * From "getHistorial"('${locacion}', '${busqueda}', '${fechaInicial}', '${fechaFinal}') Order By "${filtro}";`);
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
     } else {

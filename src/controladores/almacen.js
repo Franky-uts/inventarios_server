@@ -5,6 +5,7 @@ export const getAlmacen = async (req, res) => {
     const { filtro } = req.params
     const { locacion } = req.params
     const consulta = await pool.query(`Select * From "getAlmacen"('${locacion}','') Order By "${filtro}";`);
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
     } else {
@@ -17,6 +18,7 @@ export const getAlmacenBusqueda = async (req, res) => {
     const { locacion } = req.params
     const { busqueda } = req.params
     const consulta = await pool.query(`Select * From "getAlmacen"('${locacion}','${busqueda}') Order By "${filtro}";`);
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
     } else {
@@ -27,6 +29,7 @@ export const getAlmacenBusqueda = async (req, res) => {
 export const getAlmacenProd = async (req, res) => {
     const { filtro } = req.params
     const consulta = await pool.query(`Select * From "getAlmacenProd"('') Order By "${filtro}";`);
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
     } else {
@@ -38,6 +41,7 @@ export const getAlmacenBusquedaProd = async (req, res) => {
     const { filtro } = req.params
     const { busqueda } = req.params
     const consulta = await pool.query(`Select * From "getAlmacenProd"('${busqueda}') Order By "${filtro}";`);
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
     } else {
@@ -49,6 +53,7 @@ export const getAlmacenProducto = async (req, res) => {
     const { id } = req.params
     const { locacion } = req.params
     const consulta = await pool.query(`Select * From "getAlmacenProducto"(${id},'${locacion}');`);
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
     } else {
@@ -62,6 +67,7 @@ export const añadirAlmacen = async (req, res) => {
     const consulta = await pool.query(`Select * From "addAlmacen"(${datos.id}, ${datos.limite}, '${datos.usuario}', '${fechaTexto.dia} ${fechaTexto.hora}');`);
     var code = 409
     var mensaje = 'Error: No se pudo conectar con la base de datos.'
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         const respuesta = consulta.rows[0];
         code = respuesta.Código
@@ -77,6 +83,7 @@ export const añadirRegistroCompleto = async (req, res) => {
     const consulta = await pool.query(`Select * from "addRegistroCompleto"('${datos.usuario}', array[${datos.productos}], array[${datos.cantidades}], '${fechaTexto.dia}', '${fechaTexto.hora}');`);
     var code = 409
     var mensaje = 'Error: No se pudo conectar con la base de datos.'
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         const respuesta = consulta.rows[0];
         code = respuesta.Código
@@ -91,6 +98,7 @@ export const eliminarAlmacen = async (req, res) => {
     const consulta = await pool.query(`Select * From "delAlmacen"(${id},'${locacion}');`);
     var code = 409
     var mensaje = 'Error: No se pudo conectar con la base de datos.'
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         const respuesta = consulta.rows[0];
         code = respuesta.Código
@@ -107,6 +115,7 @@ export const editarAlmacen = async (req, res) => {
     const consulta = await pool.query(`Select * From "updAlmacen"(${id},'${datos.usuario}','${columna}','${datos.dato}','${fechaTexto.dia} ${fechaTexto.hora}');`)
     var code = 409
     var mensaje = 'Error: No se pudo conectar con la base de datos.'
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         const respuesta = consulta.rows[0];
         code = respuesta.Código
@@ -122,6 +131,7 @@ export const editarAlmacenES = async (req, res) => {
     const consulta = await pool.query(`Select * From "updESAlmacen"(${id},'${datos.usuario}',${datos.entradas},${datos.salidas},'${fechaTexto.dia}', '${fechaTexto.hora}');`)
     var code = 409
     var mensaje = 'Error: No se pudo conectar con la base de datos.'
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         const respuesta = consulta.rows[0];
         code = respuesta.Código
@@ -137,6 +147,7 @@ export const editarAlmacenMultipleES = async (req, res) => {
         (array[${datos.productos}], array[${datos.entradas}], array[${datos.salidas}], '${datos.usuario}', '${fechaTexto.dia}', '${fechaTexto.hora}');`)
     var code = 409
     var mensaje = 'Error: No se pudo conectar con la base de datos.'
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         const respuesta = consulta.rows[0];
         code = respuesta.Código
@@ -152,6 +163,7 @@ export const editarAlmacenPerdidas = async (req, res) => {
     const consulta = await pool.query(`Select * From "updPerdidasAlmacen"(${id},'${datos.usuario}','${datos.razon}','${datos.cantidad}','${fechaTexto.dia}', '${fechaTexto.hora}');`)
     var code = 409
     var mensaje = 'Error: No se pudo conectar con la base de datos.'
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         const respuesta = consulta.rows[0];
         code = respuesta.Código
@@ -165,6 +177,7 @@ export const reiniciarMovimientos = async (req, res) => {
     const consulta = await pool.query(`Select * From "reiniciarMovimientos"('${locacion}');`)
     var code = 409
     var mensaje = 'Error: No se pudo conectar con la base de datos.'
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         const respuesta = consulta.rows[0];
         code = respuesta.Código

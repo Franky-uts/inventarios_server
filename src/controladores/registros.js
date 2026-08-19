@@ -5,6 +5,7 @@ export const getRegistro = async (req, res) => {
     const { hora } = req.params
     const { usuario } = req.params
     const consulta = await pool.query(`Select * From "getRegistro"('${fecha}','${hora}','${usuario}');`);
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
     } else {
@@ -16,6 +17,7 @@ export const getRegistros = async (req, res) => {
     const { locacion } = req.params
     const { filtro } = req.params
     const consulta = await pool.query(`Select * From "getRegistros"('${locacion}','','','') Order By "${filtro}";`);
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
     } else {
@@ -28,6 +30,7 @@ export const getRegistrosBusqueda = async (req, res) => {
     const { busqueda } = req.params
     const { filtro } = req.params
     const consulta = await pool.query(`Select * From "getRegistros"('${locacion}','${busqueda}','','') Order By "${filtro}";`);
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
     } else {
@@ -41,6 +44,7 @@ export const getRegistrosRango = async (req, res) => {
     const { fechaFinal } = req.params
     const { filtro } = req.params
     const consulta = await pool.query(`Select * From "getRegistros"('${locacion}','','${fechaInicial}','${fechaFinal}') Order By "${filtro}";`);
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
     } else {
@@ -55,6 +59,7 @@ export const getRegistrosRangoBusqueda = async (req, res) => {
     const { busqueda } = req.params
     const { filtro } = req.params
     const consulta = await pool.query(`Select * From "getRegistros"('${locacion}','${busqueda}','${fechaInicial}','${fechaFinal}') Order By "${filtro}";`);
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
     } else {

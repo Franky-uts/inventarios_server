@@ -3,6 +3,7 @@ import { pool } from '../db.js';
 export const getArticulo = async (req, res) => {
     const { id } = req.params
     const consulta = await pool.query(`Select * From "getArticulo"(${id});`);
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
     } else {
@@ -13,6 +14,7 @@ export const getArticulo = async (req, res) => {
 export const getArticulos = async (req, res) => {
     const { filtro } = req.params
     const consulta = await pool.query(`Select * From "getArticulos"('') Order By "${filtro}";`);
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
     } else {
@@ -24,6 +26,7 @@ export const getArticuloBusqueda = async (req, res) => {
     const { filtro } = req.params
     const { busqueda } = req.params
     const consulta = await pool.query(`Select * From "getArticulos"('${busqueda}') Order By "${filtro}";`);
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
     } else {
@@ -34,6 +37,7 @@ export const getArticuloBusqueda = async (req, res) => {
 export const getDatosArticulo = async (req, res) => {
     const { id } = req.params
     const consulta = await pool.query(`Select * From "getDatosArticulo"(${id})`)
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
     } else {
@@ -46,6 +50,7 @@ export const añadirArticulo = async (req, res) => {
     const consulta = await pool.query(`Select  * From "addArticulo"('${datos.nombre}', '${datos.tipo}', '${datos.area}', '${datos.cantidad}', '${datos.barras}', '${datos.precio}', '${datos.materia}');`);
     var code = 409
     var mensaje = 'Error: No se pudo conectar con la base de datos.'
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         const respuesta = consulta.rows[0];
         code = respuesta.Código
@@ -59,6 +64,7 @@ export const eliminarArticulo = async (req, res) => {
     const consulta = await pool.query(`Select * From "delArticulo"(${id});`)
     var code = 409
     var mensaje = 'Error: No se pudo conectar con la base de datos.'
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         const respuesta = consulta.rows[0];
         code = respuesta.Código
@@ -73,6 +79,7 @@ export const editarArticulos = async (req, res) => {
     const consulta = await pool.query(`Select * From "updArticulo"(${id}, '${datos.columna}', ${datos.dato});`)
     var code = 409
     var mensaje = 'Error: No se pudo conectar con la base de datos.'
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         const respuesta = consulta.rows[0];
         code = respuesta.Código

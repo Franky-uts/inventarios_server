@@ -8,6 +8,7 @@ import usuarios from './rutas/usuarios.js'
 import ordenes from './rutas/ordenes.js'
 import historial from './rutas/historial.js'
 import registros from './rutas/registros.js'
+import productos from './rutas/productos.js'
 import { pool } from './db.js';
 import { fecha } from './db.js';
 
@@ -33,6 +34,7 @@ app.use('/areas', areas);
 app.use('/ordenes', ordenes);
 app.use('/historial', historial);
 app.use('/registros', registros);
+app.use('/productos', productos);
 
 setInterval(async () => {
     var hoy = new Date();

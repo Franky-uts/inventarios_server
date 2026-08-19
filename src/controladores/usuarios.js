@@ -4,6 +4,7 @@ export const getUsuario = async (req, res) => {
     const { usuario } = req.params
     const { contr } = req.params
     const { rows } = await pool.query(`Select "Nombre" From public."Usuarios" WHERE "Nombre" = '${usuario}';`)
+    res.header('Access-Control-Allow-Origin', '*')
     if (rows.length > 0) {
         const { rows } = await pool.query(`Select * From "getUsuario"('${usuario}', '${contr}');`)
         if (rows.length > 0) {
@@ -21,6 +22,7 @@ export const añadirUsuario = async (req, res) => {
     const consulta = await pool.query(`Select * From "addUsuario"('${datos.usuario}', '${datos.contraseña}', '${datos.puesto}', '${datos.locacion}');`);
     var code = 409
     var mensaje = 'Error: No se pudo conectar con la base de datos.'
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         const respuesta = consulta.rows[0];
         code = respuesta.Código
@@ -34,6 +36,7 @@ export const borrarUsuario = async (req, res) => {
     const consulta = await pool.query(`Select * From "delUsuario"('${usuario}');`)
     var code = 409
     var mensaje = 'Error: No se pudo conectar con la base de datos.'
+    res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         const respuesta = consulta.rows[0];
         code = respuesta.Código
@@ -45,6 +48,7 @@ export const borrarUsuario = async (req, res) => {
 export const editarUsuario = async (req, res) => {
     const { usuario } = req.params
     const { columna } = req.params
+    res.header('Access-Control-Allow-Origin', '*')
     if (columna != "Nombre") {
         const consulta = await pool.query(`Select "Nombre" From public."Usuarios" WHERE "Nombre" = '${usuario}';`)
         if (consulta.rowCount > 0) {
