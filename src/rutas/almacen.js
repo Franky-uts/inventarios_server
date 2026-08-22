@@ -20,9 +20,9 @@ rutas.put('/Registro', añadirRegistroCompleto)
 
 rutas.put('/Editar/:id/:columna', editarAlmacen)
 
-rutas.put('/ES/:id/', editarAlmacenES)
-
 rutas.put('/ES/Multiple', editarAlmacenMultipleES)
+
+rutas.put('/ES/:id/', editarAlmacenES)
 
 rutas.put('/Perdidas/:id/', editarAlmacenPerdidas)
 

@@ -143,8 +143,7 @@ export const editarAlmacenES = async (req, res) => {
 export const editarAlmacenMultipleES = async (req, res) => {
     const fechaTexto = fecha();
     const datos = req.body
-    const consulta = await pool.query(`Select * From "updMultipleESAlmacen"
-        (array[${datos.productos}], array[${datos.entradas}], array[${datos.salidas}], '${datos.usuario}', '${fechaTexto.dia}', '${fechaTexto.hora}');`)
+    const consulta = await pool.query(`Select * From "updMultipleESAlmacen" (array[${datos.productos}], array[${datos.entradas}], array[${datos.salidas}], '${datos.usuario}', '${fechaTexto.dia}', '${fechaTexto.hora}');`)
     var code = 409
     var mensaje = 'Error: No se pudo conectar con la base de datos.'
     res.header('Access-Control-Allow-Origin', '*')
