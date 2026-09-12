@@ -1,6 +1,17 @@
 import { pool } from '../db.js';
 import { fecha } from '../db.js';
 
+/*export const getLenght = async (req, res) => {
+    const { locacion } = req.params
+    const consulta = await pool.query(`Select * From "getAlmacenLastId"('${locacion}')";`);
+    res.header('Access-Control-Allow-Origin', '*')
+    if (consulta.rowCount > 0) {
+        res.send(consulta.rows)
+    } else {
+        res.status(409).send('No hay productos registrados.')
+    }
+}*/
+
 export const getAlmacen = async (req, res) => {
     const { filtro } = req.params
     const { locacion } = req.params
@@ -65,22 +76,6 @@ export const añadirAlmacen = async (req, res) => {
     const datos = req.body
     const fechaTexto = fecha()
     const consulta = await pool.query(`Select * From "addAlmacen"(${datos.id}, ${datos.limite}, '${datos.usuario}', '${fechaTexto.dia} ${fechaTexto.hora}');`);
-    var code = 409
-    var mensaje = 'Error: No se pudo conectar con la base de datos.'
-    res.header('Access-Control-Allow-Origin', '*')
-    if (consulta.rowCount > 0) {
-        const respuesta = consulta.rows[0];
-        code = respuesta.Código
-        mensaje = respuesta.Mensaje
-    }
-    res.status(code).send(mensaje)
-}
-
-
-export const añadirRegistroCompleto = async (req, res) => {
-    const datos = req.body
-    const fechaTexto = fecha()
-    const consulta = await pool.query(`Select * from "addRegistroCompleto"('${datos.usuario}', array[${datos.productos}], array[${datos.cantidades}], '${fechaTexto.dia}', '${fechaTexto.hora}');`);
     var code = 409
     var mensaje = 'Error: No se pudo conectar con la base de datos.'
     res.header('Access-Control-Allow-Origin', '*')

@@ -45,3 +45,35 @@ export const getProducto = async (req, res) => {
         res.status(409).send('Error: El producto no existe')
     }
 }
+
+export const añadirProducto = async (req, res) => {
+    const datos = req.body
+    console.log(datos)
+    const consulta = await pool.query(`Select * From "addProducto"
+    ('${datos.nombre}', '${datos.clave}', '${datos.descripcion}', ${datos.precio},  '${datos.categoria}', '${datos.tipo}',
+    '${datos.imagen}', '${datos.almacen}', Array[${datos.ingredientes}], Array[${datos.cantidades}]);`);
+    var code = 409
+    var mensaje = 'Error: No se pudo conectar con la base de datos.'
+    res.header('Access-Control-Allow-Origin', '*')
+    if (consulta.rowCount > 0) {
+        const respuesta = consulta.rows[0];
+        code = respuesta.Código
+        mensaje = respuesta.Mensaje
+    }
+    res.status(code).send(mensaje)
+}
+
+export const editarProducto = async (req, res) => {
+    const { id } = req.params
+    const datos = req.body;
+    const consulta = await pool.query(`Select * From "updProducto"('${datos.columna}', ${datos.dato}, ${id});`);
+    var code = 409
+    var mensaje = 'Error: No se pudo conectar con la base de datos.'
+    res.header('Access-Control-Allow-Origin', '*')
+    if (consulta.rowCount > 0) {
+        const respuesta = consulta.rows[0];
+        code = respuesta.Código
+        mensaje = respuesta.Mensaje
+    }
+    res.status(code).send(mensaje)
+}
