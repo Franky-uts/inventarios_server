@@ -15,7 +15,7 @@ import { fecha } from '../db.js';
 export const getAlmacen = async (req, res) => {
     const { filtro } = req.params
     const { locacion } = req.params
-    const consulta = await pool.query(`Select * From "getAlmacen"('${locacion}','') Order By "${filtro}";`);
+    const consulta = await pool.query(`Select * From "getAlmacen"('${locacion}','') Order By "${filtro}", "Nombre";`);
     res.header('Access-Control-Allow-Origin', '*')
     if (consulta.rowCount > 0) {
         res.send(consulta.rows)
@@ -123,7 +123,7 @@ export const editarAlmacenES = async (req, res) => {
     const { id } = req.params
     const fechaTexto = fecha();
     const datos = req.body
-    const consulta = await pool.query(`Select * From "updESAlmacen"(${id},'${datos.usuario}',${datos.entradas},${datos.salidas},'${fechaTexto.dia}', '${fechaTexto.hora}');`)
+    const consulta = await pool.query(`Select * From "updESAlmacen"(${id}, '${datos.usuario}', ${datos.entradas}, ${datos.entradasPaquete}, ${datos.entradasContenedor}, ${datos.salidas}, ${datos.salidasPaquete}, ${datos.salidasContenedor}, '${fechaTexto.dia}', '${fechaTexto.hora}');`)
     var code = 409
     var mensaje = 'Error: No se pudo conectar con la base de datos.'
     res.header('Access-Control-Allow-Origin', '*')
@@ -138,7 +138,8 @@ export const editarAlmacenES = async (req, res) => {
 export const editarAlmacenMultipleES = async (req, res) => {
     const fechaTexto = fecha();
     const datos = req.body
-    const consulta = await pool.query(`Select * From "updMultipleESAlmacen" (array[${datos.productos}], array[${datos.entradas}], array[${datos.salidas}], '${datos.usuario}', '${fechaTexto.dia}', '${fechaTexto.hora}');`)
+    //console.log(`Select * From "updMultipleESAlmacen" (array[${datos.productos}], array[${datos.entradas}], array[${datos.entradasPaquete}], array[${datos.salidas}], array[${datos.salidasPaquete}], '${datos.usuario}', '${fechaTexto.dia}', '${fechaTexto.hora}');`)
+    const consulta = await pool.query(`Select * From "updMultipleESAlmacen" (array[${datos.productos}], array[${datos.entradas}], array[${datos.entradasPaquete}], array[${datos.entradasContenedor}], array[${datos.salidas}], array[${datos.salidasPaquete}], array[${datos.salidasContenedor}], '${datos.usuario}', '${fechaTexto.dia}', '${fechaTexto.hora}');`)
     var code = 409
     var mensaje = 'Error: No se pudo conectar con la base de datos.'
     res.header('Access-Control-Allow-Origin', '*')

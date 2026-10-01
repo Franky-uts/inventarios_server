@@ -47,7 +47,7 @@ export const getDatosArticulo = async (req, res) => {
 
 export const añadirArticulo = async (req, res) => {
     const datos = req.body
-    const consulta = await pool.query(`Select  * From "addArticulo"('${datos.nombre}', '${datos.tipo}', '${datos.area}', '${datos.cantidad}', '${datos.barras}', '${datos.precio}', '${datos.materia}');`);
+    const consulta = await pool.query(`Select  * From "addArticulo"('${datos.nombre}', '${datos.tipo}', '${datos.area}', ${datos.cantidad}, ${datos.paquetes},  '${datos.barras}', ${datos.precio}, '${datos.materia}');`);
     var code = 409
     var mensaje = 'Error: No se pudo conectar con la base de datos.'
     res.header('Access-Control-Allow-Origin', '*')

@@ -48,7 +48,7 @@ export const getProducto = async (req, res) => {
 
 export const añadirProducto = async (req, res) => {
     const datos = req.body
-    console.log(datos)
+    //console.log(datos)
     const consulta = await pool.query(`Select * From "addProducto"
     ('${datos.nombre}', '${datos.clave}', '${datos.descripcion}', ${datos.precio},  '${datos.categoria}', '${datos.tipo}',
     '${datos.imagen}', '${datos.almacen}', Array[${datos.ingredientes}], Array[${datos.cantidades}]);`);

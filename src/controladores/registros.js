@@ -79,7 +79,7 @@ export const getRegistrosRangoBusqueda = async (req, res) => {
 export const añadirRegistroCompleto = async (req, res) => {
     const datos = req.body
     const fechaTexto = fecha()
-    const consulta = await pool.query(`Select * from "addRegistroCompleto"('${datos.usuario}', array[${datos.productos}], array[${datos.unidades}], array[${datos.cajas}], '${fechaTexto.dia}', '${fechaTexto.hora}');`);
+    const consulta = await pool.query(`Select * from "addRegistroCompleto"('${datos.usuario}', array[${datos.productos}], array[${datos.cerrados}], array[${datos.paquetes}], array[${datos.abiertos}], '${fechaTexto.dia}', '${fechaTexto.hora}');`);
     var code = 409
     var mensaje = 'Error: No se pudo conectar con la base de datos.'
     res.header('Access-Control-Allow-Origin', '*')
